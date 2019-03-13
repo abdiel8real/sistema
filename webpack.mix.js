@@ -15,13 +15,15 @@ mix.styles([
    'resources/assets/plantilla/css/font-awesome.min.css',
    'resources/assets/plantilla/css/simple-line-icons.min.css',
    'resources/assets/plantilla/css/style.css'
-], 'public/css/plantilla.css');
+], 'public/css/plantilla.css')
 
 mix.scripts([
-   'resources/assets/plantilla/js/jquery.min.js',
    'resources/assets/plantilla/js/popper.min.js',
-   'resources/assets/plantilla/js/bootstrap.min.js',
    'resources/assets/plantilla/js/Chart.min.js',
-   'resources/assets/plantilla/js/pace.js',
-   'resources/assets/plantilla/js/template.js'
-], 'public/js/plantilla.js');
+   'resources/assets/plantilla/js/jquery.min.js',
+   'resources/assets/plantilla/js/bootstrap.min.js',
+   'resources/assets/plantilla/js/template.js',
+   'resources/assets/plantilla/js/pace.js'
+], 'public/js/plantilla.js')
+
+.js(["resources/js/app.js"], "public/js/app.js");
