@@ -136,7 +136,6 @@
                     class="form-control"
                     placeholder="Nombre de categoría"
                   >
-                  <span class="help-block">(*) Ingrese el nombre de la categoría</span>
                 </div>
               </div>
               <div class="form-group row">
@@ -150,6 +149,13 @@
                   >
                 </div>
               </div>
+                <div v-show="errorCategoria" class="form-group row div-error">
+                    <div class="text-center text-error">
+                        <div v-for="error in errorMostrarMsCategoria" :key="error" v-text="error">
+
+                        </div>
+                    </div>
+                </div>
             </form>
           </div>
           <div class="modal-footer">
@@ -206,7 +212,9 @@ export default {
       arrayCategoria: [],
       modal: 0,
       tituloModal: "",
-      tipoAccion: 0
+      tipoAccion: 0,
+        errorCategoria: 0,
+        errorMostrarMsCategoria: []
     };
   },
   methods: {
@@ -222,6 +230,11 @@ export default {
         });
     },
     registrarCategoria() {
+        if (this.validarCategoria())
+        {
+            return;
+        }
+
         let me = this;
 
         axios.post("/categoria/registrar", {
@@ -234,6 +247,16 @@ export default {
             console.log(error);
         });
     },
+      validarCategoria() {
+          this.errorCategoria = 0;
+          this.errorMostrarMsCategoria = [];
+
+          if (!this.nombre) this.errorMostrarMsCategoria.push("El nombre de la categoría no puede estar vacío.");
+
+          if (this.errorMostrarMsCategoria.length) this.errorCategoria = 1;
+
+          return this.errorCategoria;
+      },
     cerrarModal(){
         this.modal = 0;
         this.tituloModal = "",
@@ -281,6 +304,15 @@ export default {
         opacity: 1 !important;
         position: absolute !important;
         background-color: #3c29297a !important;
+    }
+
+    .div-error {
+        display: flex;
+        justify-content: center;
+    }
+    .text-error {
+        color: red !important;
+        font-weight: bold;
     }
 
 </style>
