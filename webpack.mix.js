@@ -23,7 +23,8 @@ mix.scripts([
    'resources/assets/plantilla/js/jquery.min.js',
    'resources/assets/plantilla/js/bootstrap.min.js',
    'resources/assets/plantilla/js/template.js',
-   'resources/assets/plantilla/js/pace.js'
+   'resources/assets/plantilla/js/pace.js',
+   'resources/assets/plantilla/js/sweetalert2@8.js'
 ], 'public/js/plantilla.js')
 
 .js(["resources/js/app.js"], "public/js/app.js");
