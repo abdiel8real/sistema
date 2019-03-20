@@ -279,20 +279,24 @@
                     console.log(error);
                 });
             },
-            actualizarCategoria() {
-                if (this.validarCategoria()) {
+            actualizarArticulo() {
+                if (this.validarArticulo()) {
                     return;
                 }
 
                 let me = this;
 
-                axios.put("/categoria/actualizar", {
+                axios.put("/articulo/actualizar", {
+                    'idcategoria': this.idcategoria,
+                    'codigo': this.codigo,
                     "nombre": this.nombre,
+                    'stock': this.stock,
+                    'precio_venta': this.precio_venta,
                     "descripcion": this.descripcion,
-                    'id': this.categoria_id
+                    'id': this.articulo_id
                 }).then(function (response) {
                     me.cerrarModal();
-                    me.listarCategoria(1, '', 'nombre');
+                    me.listarArticulo(1, '', 'nombre');
                 }).catch(function (error) {
                     console.log(error);
                 });
