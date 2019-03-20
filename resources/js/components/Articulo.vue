@@ -10,11 +10,11 @@
             <!-- Ejemplo de tabla Listado -->
             <div class="card">
                 <div class="card-header">
-                    <i class="fa fa-align-justify"></i> Categorías
+                    <i class="fa fa-align-justify"></i> Artículos
                     <button
-                        type="button"
-                        @click="abrirModal('categoria', 'registrar')"
-                        class="btn btn-secondary"
+                            type="button"
+                            @click="abrirModal('articulo', 'registrar')"
+                            class="btn btn-secondary"
                     >
                         <i class="icon-plus"></i>&nbsp;Nuevo
                     </button>
@@ -28,13 +28,13 @@
                                     <option value="descripcion">Descripción</option>
                                 </select>
                                 <input
-                                    type="text"
-                                    v-model="buscar"
-                                    @keyup.enter="listarCategoria(1, buscar, criterio)"
-                                    class="form-control"
-                                    placeholder="Texto a buscar"
+                                        type="text"
+                                        v-model="buscar"
+                                        @keyup.enter="listarArticulo(1, buscar, criterio)"
+                                        class="form-control"
+                                        placeholder="Texto a buscar"
                                 >
-                                <button type="submit" @click="listarCategoria(1, buscar, criterio)" class="btn btn-primary">
+                                <button type="submit" @click="listarArticulo(1, buscar, criterio)" class="btn btn-primary">
                                     <i class="fa fa-search"></i> Buscar
                                 </button>
                             </div>
@@ -44,36 +44,44 @@
                         <thead>
                         <tr>
                             <th>Opciones</th>
+                            <th>Código</th>
                             <th>Nombre</th>
+                            <th>Categoría</th>
+                            <th>Precio Venta</th>
+                            <th>Stock</th>
                             <th>Descripción</th>
                             <th>Estado</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="categoria in arrayCategoria" :key="categoria.id">
+                        <tr v-for="articulo in arrayArticulo" :key="articulo.id">
                             <td>
                                 <button
-                                    type="button"
-                                    @click="abrirModal('categoria', 'actualizar', categoria)"
-                                    class="btn btn-warning btn-sm"
+                                        type="button"
+                                        @click="abrirModal('articulo', 'actualizar', articulo)"
+                                        class="btn btn-warning btn-sm"
                                 >
                                     <i class="icon-pencil"></i>
                                 </button> &nbsp;
-                                <template v-if="categoria.condicion">
-                                    <button type="button" class="btn btn-danger btn-sm" @click="desactivarCategoria(categoria.id)">
+                                <template v-if="articulo.condicion">
+                                    <button type="button" class="btn btn-danger btn-sm" @click="desactivarCategoria(articulo.id)">
                                         <i class="icon-trash"></i>
                                     </button>
                                 </template>
                                 <template v-else>
-                                    <button type="button" class="btn btn-info btn-sm" @click="activarCategoria(categoria.id)">
+                                    <button type="button" class="btn btn-info btn-sm" @click="activarCategoria(articulo.id)">
                                         <i class="icon-check"></i>
                                     </button>
                                 </template>
                             </td>
-                            <td v-text="categoria.nombre"></td>
-                            <td v-text="categoria.descripcion"></td>
+                            <td v-text="articulo.codigo"></td>
+                            <td v-text="articulo.nombre"></td>
+                            <td v-text="articulo.nombre_categoria"></td>
+                            <td v-text="articulo.precio_venta"></td>
+                            <td v-text="articulo.stock"></td>
+                            <td v-text="articulo.descripcion"></td>
                             <td>
-                                <div v-if="categoria.condicion">
+                                <div v-if="articulo.condicion">
                                     <span class="badge badge-success">Activo</span>
                                 </div>
                                 <div v-else>
@@ -102,13 +110,13 @@
         </div>
         <!--Inicio del modal agregar/actualizar-->
         <div
-            class="modal fade"
-            tabindex="-1"
-            :class="{'mostrar': modal}"
-            role="dialog"
-            aria-labelledby="myModalLabel"
-            style="display: none;"
-            aria-hidden="true"
+                class="modal fade"
+                tabindex="-1"
+                :class="{'mostrar': modal}"
+                role="dialog"
+                aria-labelledby="myModalLabel"
+                style="display: none;"
+                aria-hidden="true"
         >
             <div class="modal-dialog modal-primary modal-lg" role="document">
                 <div class="modal-content">
@@ -124,10 +132,10 @@
                                 <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
                                 <div class="col-md-9">
                                     <input
-                                        type="text"
-                                        v-model="nombre"
-                                        class="form-control"
-                                        placeholder="Nombre de categoría"
+                                            type="text"
+                                            v-model="nombre"
+                                            class="form-control"
+                                            placeholder="Nombre de categoría"
                                     >
                                 </div>
                             </div>
@@ -135,10 +143,10 @@
                                 <label class="col-md-3 form-control-label" for="email-input">Descripción</label>
                                 <div class="col-md-9">
                                     <input
-                                        type="text"
-                                        v-model="descripcion"
-                                        class="form-control"
-                                        placeholder="Ingrese descripción"
+                                            type="text"
+                                            v-model="descripcion"
+                                            class="form-control"
+                                            placeholder="Ingrese descripción"
                                     >
                                 </div>
                             </div>
@@ -173,15 +181,20 @@
     export default {
         data() {
             return {
-                categoria_id: 0,
-                nombre: "",
+                articulo_id: 0,
+                idcategoria: 0,
+                nombre_categoria: "",
+                codigo: '',
+                nombre: '',
+                precio_venta: 0,
+                stock: 0,
                 descripcion: "",
-                arrayCategoria: [],
+                arrayArticulo: [],
                 modal: 0,
                 tituloModal: "",
                 tipoAccion: 0,
-                errorCategoria: 0,
-                errorMostrarMsCategoria: [],
+                errorArticulo: 0,
+                errorMostrarMsArticulo: [],
                 pagination: {
                     'total': 0,
                     'current_page': 0,
@@ -199,7 +212,7 @@
             isActivated: function () {
                 return this.pagination.current_page;
             },
-        //    Calcula los elementos de paginación
+            //    Calcula los elementos de paginación
             pagesNumber: function () {
                 if (!this.pagination.to) {
                     return [];
@@ -215,7 +228,7 @@
                 {
                     to = this.pagination.last_page;
                 }
-                
+
                 var pagesArray = [];
                 while (from <= to) {
                     pagesArray.push(from);
@@ -225,13 +238,13 @@
             }
         },
         methods: {
-            listarCategoria(page, buscar, criterio) {
+            listarArticulo(page, buscar, criterio) {
                 let me = this;
-                var url = '/categoria?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+                var url = '/articulo?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
                 axios.get(url)
                     .then(function (response) {
                         var respuesta = response.data;
-                        me.arrayCategoria = respuesta.categorias.data;
+                        me.arrayArticulo = respuesta.articulos.data;
                         me.pagination = respuesta.pagination;
                     })
                     .catch(function (error) {
@@ -243,7 +256,7 @@
                 //Actualiza la página actual
                 me.pagination.current_page = page;
                 // Envia la petición para ver la data de esa página
-                me.listarCategoria(page, buscar, criterio);
+                me.listarArticulo(page, buscar, criterio);
             },
             registrarCategoria() {
                 if (this.validarCategoria()) {
@@ -409,7 +422,7 @@
             }
         },
         mounted() {
-            this.listarCategoria(1, this.buscar, this.criterio);
+            this.listarArticulo(1, this.buscar, this.criterio);
         }
     };
 </script>
