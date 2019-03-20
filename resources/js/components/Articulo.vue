@@ -146,6 +146,9 @@
                                             class="form-control"
                                             placeholder="Código de barras"
                                     >
+                                    <barcode :value="codigo" :options="{ format: 'EAN-13' }">
+                                        Generando código de barras.
+                                    </barcode>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -220,6 +223,8 @@
 </template>
 
 <script>
+    import VueBarcode from 'vue-barcode';
+
     export default {
         data() {
             return {
@@ -250,6 +255,9 @@
                 buscar: '',
                 arrayCategoria: []
             };
+        },
+        components: {
+            'barcode': VueBarcode
         },
         computed: {
             isActivated: function () {
