@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Articulo;
 use Illuminate\Http\Request;
 //use Illuminate\Support\Facades\DB;
 use App\Categoria;
@@ -40,6 +41,14 @@ class CategoriaController extends Controller
             ],
             'categorias' =>$categorias
         ];
+    }
+
+    public function selectCategoria(Request $request){
+        if (!$request->ajax()) return redirect('/');
+        $categorias = Categoria::where('condicion', '=', '1')
+        ->select('id', 'nombre')->orderBy('nombre', 'asc')->get();
+
+        return ['categorias' => $categorias];
     }
 
     /**
