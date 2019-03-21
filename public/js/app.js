@@ -2425,7 +2425,6 @@ __webpack_require__.r(__webpack_exports__);
       var me = this; //Actualiza la página actual
 
       me.pagination.current_page = page; // Envia la petición para ver la data de esa página
-
       me.listarCategoria(page, buscar, criterio);
     },
     registrarCategoria: function registrarCategoria() {
