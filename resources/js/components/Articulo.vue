@@ -129,60 +129,18 @@
                     <div class="modal-body">
                         <form action method="post" enctype="multipart/form-data" class="form-horizontal">
                             <div class="form-group row">
-                                <label class="col-md-3 form-control-label">Categoría</label>
-                                <div class="col-md-9">
-                                    <select class="form-control" v-model="idcategoria">
-                                        <option value="0" disabled>Seleccione</option>
-                                        <option v-for="categoria in arrayCategoria" :key="categoria.id" :value="categoria.id" v-text="categoria.nombre"></option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label">Código</label>
-                                <div class="col-md-9">
-                                    <input
-                                            type="text"
-                                            v-model="codigo"
-                                            class="form-control"
-                                            placeholder="Código de barras"
-                                    >
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label">Nombre</label>
+                                <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
                                 <div class="col-md-9">
                                     <input
                                             type="text"
                                             v-model="nombre"
                                             class="form-control"
-                                            placeholder="Nombre de artículo"
+                                            placeholder="Nombre de categoría"
                                     >
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="col-md-3 form-control-label">Precio Venta</label>
-                                <div class="col-md-9">
-                                    <input
-                                            type="number"
-                                            v-model="precio_venta"
-                                            class="form-control"
-                                            placeholder=""
-                                    >
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label">Stock</label>
-                                <div class="col-md-9">
-                                    <input
-                                            type="number"
-                                            v-model="stock"
-                                            class="form-control"
-                                            placeholder=""
-                                    >
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label">Descripción</label>
+                                <label class="col-md-3 form-control-label" for="email-input">Descripción</label>
                                 <div class="col-md-9">
                                     <input
                                             type="text"
@@ -192,9 +150,9 @@
                                     >
                                 </div>
                             </div>
-                            <div v-show="errorArticulo" class="form-group row div-error">
+                            <div v-show="errorCategoria" class="form-group row div-error">
                                 <div class="text-center text-error">
-                                    <div v-for="error in errorMostrarMsArticulo" :key="error" v-text="error">
+                                    <div v-for="error in errorMostrarMsCategoria" :key="error" v-text="error">
 
                                     </div>
                                 </div>
@@ -247,8 +205,7 @@
                 },
                 offset: 3,
                 criterio: 'nombre',
-                buscar: '',
-                arrayCategoria: []
+                buscar: ''
             };
         },
         computed: {
@@ -289,19 +246,6 @@
                         var respuesta = response.data;
                         me.arrayArticulo = respuesta.articulos.data;
                         me.pagination = respuesta.pagination;
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
-            },
-            selectCategoria() {
-                let me = this;
-                var url = '/categoria/selectCategoria';
-                axios.get(url)
-                    .then(function (response) {
-                        // console.log(response);
-                        var respuesta = response.data;
-                        me.arrayCategoria = respuesta.categorias;
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -451,11 +395,11 @@
             },
             abrirModal(modelo, accion, data = []) {
                 switch (modelo) {
-                    case "articulo": {
+                    case "categoria": {
                         switch (accion) {
                             case "registrar": {
                                 this.modal = 1;
-                                this.tituloModal = "Registrar Artículo";
+                                this.tituloModal = "Registrar Categoria";
                                 this.nombre = "";
                                 this.descripcion = "";
                                 this.tipoAccion = 1;
@@ -465,7 +409,7 @@
                             case "actualizar": {
                                 // console.log(data);
                                 this.modal = 1;
-                                this.tituloModal = "Actualizar Artículo";
+                                this.tituloModal = "Actualizar categoría";
                                 this.tipoAccion = 2;
                                 this.categoria_id = data['id'];
                                 this.nombre = data['nombre'];
@@ -475,7 +419,6 @@
                         }
                     }
                 }
-                this.selectCategoria();
             }
         },
         mounted() {
