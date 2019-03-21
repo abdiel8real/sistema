@@ -61,8 +61,7 @@ class CategoriaController extends Controller
     {
         if (!$request->ajax()) return redirect('/');
         $categoria = new Categoria();
-        $categoria -> nombre = $request -> nombre;
-        $categoria -> descripcion = $request -> descripcion;
+        $categoria -> fill($request->all());
         $categoria -> condicion = "1";
         $categoria -> save();
     }
@@ -80,8 +79,7 @@ class CategoriaController extends Controller
     {
         if (!$request->ajax()) return redirect('/');
         $categoria = Categoria::findOrFail($request -> id);
-        $categoria -> nombre = $request -> nombre;
-        $categoria -> descripcion = $request -> descripcion;
+        $categoria -> fill($request->all());
         $categoria -> condicion = "1";
         $categoria -> save();
     }

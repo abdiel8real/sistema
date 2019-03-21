@@ -158,34 +158,12 @@
                                             type="text"
                                             v-model="nombre"
                                             class="form-control"
-                                            placeholder="Nombre de artículo"
+                                            placeholder="Nombre de categoría"
                                     >
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="col-md-3 form-control-label">Precio Venta</label>
-                                <div class="col-md-9">
-                                    <input
-                                            type="number"
-                                            v-model="precio_venta"
-                                            class="form-control"
-                                            placeholder=""
-                                    >
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label">Stock</label>
-                                <div class="col-md-9">
-                                    <input
-                                            type="number"
-                                            v-model="stock"
-                                            class="form-control"
-                                            placeholder=""
-                                    >
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label">Descripción</label>
+                                <label class="col-md-3 form-control-label" for="email-input">Descripción</label>
                                 <div class="col-md-9">
                                     <input
                                             type="text"
@@ -195,9 +173,9 @@
                                     >
                                 </div>
                             </div>
-                            <div v-show="errorArticulo" class="form-group row div-error">
+                            <div v-show="errorCategoria" class="form-group row div-error">
                                 <div class="text-center text-error">
-                                    <div v-for="error in errorMostrarMsArticulo" :key="error" v-text="error">
+                                    <div v-for="error in errorMostrarMsCategoria" :key="error" v-text="error">
 
                                     </div>
                                 </div>
@@ -252,8 +230,7 @@
                 },
                 offset: 3,
                 criterio: 'nombre',
-                buscar: '',
-                arrayCategoria: []
+                buscar: ''
             };
         },
         components: {
@@ -297,19 +274,6 @@
                         var respuesta = response.data;
                         me.arrayArticulo = respuesta.articulos.data;
                         me.pagination = respuesta.pagination;
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
-            },
-            selectCategoria() {
-                let me = this;
-                var url = '/categoria/selectCategoria';
-                axios.get(url)
-                    .then(function (response) {
-                        // console.log(response);
-                        var respuesta = response.data;
-                        me.arrayCategoria = respuesta.categorias;
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -476,7 +440,7 @@
             },
             abrirModal(modelo, accion, data = []) {
                 switch (modelo) {
-                    case "articulo": {
+                    case "categoria": {
                         switch (accion) {
                             case "registrar": {
                                 this.modal = 1;
@@ -492,7 +456,7 @@
                             }
                             case "actualizar": {
                                 this.modal = 1;
-                                this.tituloModal = "Actualizar Artículo";
+                                this.tituloModal = "Actualizar categoría";
                                 this.tipoAccion = 2;
                                 this.articulo_id = data['id'];
                                 this.idcategoria = data['idcategoria'];
@@ -506,7 +470,6 @@
                         }
                     }
                 }
-                this.selectCategoria();
             }
         },
         mounted() {
