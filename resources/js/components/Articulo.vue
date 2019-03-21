@@ -129,7 +129,30 @@
                     <div class="modal-body">
                         <form action method="post" enctype="multipart/form-data" class="form-horizontal">
                             <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
+                                <label class="col-md-3 form-control-label">Categoría</label>
+                                <div class="col-md-9">
+                                    <select class="form-control" v-model="idcategoria">
+                                        <option value="0" disabled>Seleccione</option>
+                                        <option v-for="categoria in arrayCategoria" :key="categoria.id" :value="categoria.id" v-text="categoria.nombre"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label">Código</label>
+                                <div class="col-md-9">
+                                    <input
+                                            type="text"
+                                            v-model="codigo"
+                                            class="form-control"
+                                            placeholder="Código de barras"
+                                    >
+                                    <barcode :value="codigo" :options="{ format: 'EAN-13' }">
+                                        Generando código de barras.
+                                    </barcode>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label">Nombre</label>
                                 <div class="col-md-9">
                                     <input
                                             type="text"
@@ -178,6 +201,8 @@
 </template>
 
 <script>
+    import VueBarcode from 'vue-barcode';
+
     export default {
         data() {
             return {
@@ -207,6 +232,9 @@
                 criterio: 'nombre',
                 buscar: ''
             };
+        },
+        components: {
+            'barcode': VueBarcode
         },
         computed: {
             isActivated: function () {
