@@ -416,13 +416,9 @@
                         switch (accion) {
                             case "registrar": {
                                 this.modal = 1;
-<<<<<<< HEAD
                                 this.tituloModal = "Registrar Artículo";
                                 this.idcategoria = 0;
                                 this.codigo = '';
-=======
-                                this.tituloModal = "Registrar Categoria";
->>>>>>> develop
                                 this.nombre = "";
                                 this.precio_venta = 0;
                                 this.descripcion = "";
