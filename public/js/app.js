@@ -1942,48 +1942,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2011,8 +1969,7 @@ __webpack_require__.r(__webpack_exports__);
       },
       offset: 3,
       criterio: 'nombre',
-      buscar: '',
-      arrayCategoria: []
+      buscar: ''
     };
   },
   computed: {
@@ -2055,17 +2012,6 @@ __webpack_require__.r(__webpack_exports__);
         var respuesta = response.data;
         me.arrayArticulo = respuesta.articulos.data;
         me.pagination = respuesta.pagination;
-      }).catch(function (error) {
-        console.log(error);
-      });
-    },
-    selectCategoria: function selectCategoria() {
-      var me = this;
-      var url = '/categoria/selectCategoria';
-      axios.get(url).then(function (response) {
-        // console.log(response);
-        var respuesta = response.data;
-        me.arrayCategoria = respuesta.categorias;
       }).catch(function (error) {
         console.log(error);
       });
@@ -2200,7 +2146,7 @@ __webpack_require__.r(__webpack_exports__);
       var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
 
       switch (modelo) {
-        case "articulo":
+        case "categoria":
           {
             switch (accion) {
               case "registrar":
@@ -2219,7 +2165,7 @@ __webpack_require__.r(__webpack_exports__);
               case "actualizar":
                 {
                   this.modal = 1;
-                  this.tituloModal = "Actualizar Artículo";
+                  this.tituloModal = "Actualizar categoría";
                   this.tipoAccion = 2;
                   this.articulo_id = data['id'];
                   this.idcategoria = data['idcategoria'];
@@ -2233,8 +2179,6 @@ __webpack_require__.r(__webpack_exports__);
             }
           }
       }
-
-      this.selectCategoria();
     }
   },
   mounted: function mounted() {
@@ -2497,7 +2441,6 @@ __webpack_require__.r(__webpack_exports__);
       var me = this; //Actualiza la página actual
 
       me.pagination.current_page = page; // Envia la petición para ver la data de esa página
-
       me.listarCategoria(page, buscar, criterio);
     },
     registrarCategoria: function registrarCategoria() {
@@ -38769,100 +38712,10 @@ var render = function() {
                     _c("div", { staticClass: "form-group row" }, [
                       _c(
                         "label",
-                        { staticClass: "col-md-3 form-control-label" },
-                        [_vm._v("Categoría")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
-                        _c(
-                          "select",
-                          {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.idcategoria,
-                                expression: "idcategoria"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            on: {
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.idcategoria = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              }
-                            }
-                          },
-                          [
-                            _c(
-                              "option",
-                              { attrs: { value: "0", disabled: "" } },
-                              [_vm._v("Seleccione")]
-                            ),
-                            _vm._v(" "),
-                            _vm._l(_vm.arrayCategoria, function(categoria) {
-                              return _c("option", {
-                                key: categoria.id,
-                                domProps: {
-                                  value: categoria.id,
-                                  textContent: _vm._s(categoria.nombre)
-                                }
-                              })
-                            })
-                          ],
-                          2
-                        )
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        { staticClass: "col-md-3 form-control-label" },
-                        [_vm._v("Código")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.codigo,
-                              expression: "codigo"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "text",
-                            placeholder: "Código de barras"
-                          },
-                          domProps: { value: _vm.codigo },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.codigo = $event.target.value
-                            }
-                          }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        { staticClass: "col-md-3 form-control-label" },
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
                         [_vm._v("Nombre")]
                       ),
                       _vm._v(" "),
@@ -38879,7 +38732,7 @@ var render = function() {
                           staticClass: "form-control",
                           attrs: {
                             type: "text",
-                            placeholder: "Nombre de artículo"
+                            placeholder: "Nombre de categoría"
                           },
                           domProps: { value: _vm.nombre },
                           on: {
@@ -38897,71 +38750,10 @@ var render = function() {
                     _c("div", { staticClass: "form-group row" }, [
                       _c(
                         "label",
-                        { staticClass: "col-md-3 form-control-label" },
-                        [_vm._v("Precio Venta")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.precio_venta,
-                              expression: "precio_venta"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: { type: "number", placeholder: "" },
-                          domProps: { value: _vm.precio_venta },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.precio_venta = $event.target.value
-                            }
-                          }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        { staticClass: "col-md-3 form-control-label" },
-                        [_vm._v("Stock")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.stock,
-                              expression: "stock"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: { type: "number", placeholder: "" },
-                          domProps: { value: _vm.stock },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.stock = $event.target.value
-                            }
-                          }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        { staticClass: "col-md-3 form-control-label" },
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "email-input" }
+                        },
                         [_vm._v("Descripción")]
                       ),
                       _vm._v(" "),
@@ -39000,8 +38792,8 @@ var render = function() {
                           {
                             name: "show",
                             rawName: "v-show",
-                            value: _vm.errorArticulo,
-                            expression: "errorArticulo"
+                            value: _vm.errorCategoria,
+                            expression: "errorCategoria"
                           }
                         ],
                         staticClass: "form-group row div-error"
@@ -39010,7 +38802,7 @@ var render = function() {
                         _c(
                           "div",
                           { staticClass: "text-center text-error" },
-                          _vm._l(_vm.errorMostrarMsArticulo, function(error) {
+                          _vm._l(_vm.errorMostrarMsCategoria, function(error) {
                             return _c("div", {
                               key: error,
                               domProps: { textContent: _vm._s(error) }
