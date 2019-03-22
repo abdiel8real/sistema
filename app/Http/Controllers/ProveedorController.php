@@ -59,6 +59,7 @@ class ProveedorController extends Controller
 
             $proveedor = new Proveedor();
             $proveedor ->fill($request->all());
+            $proveedor -> id = $persona->id;
             $proveedor ->save();
 
             DB::commit();
@@ -88,6 +89,7 @@ class ProveedorController extends Controller
             $persona -> save();
 
             $proveedor ->fill($request->all());
+            $proveedor -> id = $persona->id;
             $proveedor ->save();
 
             DB::commit();

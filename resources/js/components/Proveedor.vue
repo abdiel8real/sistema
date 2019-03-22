@@ -178,6 +178,28 @@
                                     >
                                 </div>
                             </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label">Contacto</label>
+                                <div class="col-md-9">
+                                    <input
+                                            type="text"
+                                            v-model="contacto"
+                                            class="form-control"
+                                            placeholder="Nombre del contacto"
+                                    >
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label">Teléfono de contacto</label>
+                                <div class="col-md-9">
+                                    <input
+                                            type="text"
+                                            v-model="telefono_contacto"
+                                            class="form-control"
+                                            placeholder="Teléfono del contacto"
+                                    >
+                                </div>
+                            </div>
                             <div v-show="errorPersona" class="form-group row div-error">
                                 <div class="text-center text-error">
                                     <div v-for="error in errorMostrarMsPersona" :key="error" v-text="error">
@@ -289,13 +311,15 @@
                     return;
                 }
                 let me = this;
-                axios.post("/cliente/registrar", {
+                axios.post("/proveedor/registrar", {
                     "nombre": this.nombre,
                     "tipo_documento": this.tipo_documento,
                     "num_documento": this.num_documento,
                     "direccion": this.direccion,
                     "telefono": this.telefono,
-                    "email": this.email
+                    "email": this.email,
+                    "contacto": this.contacto,
+                    "telefono_contacto": this.telefono_contacto
                 }).then(function (response) {
                     me.cerrarModal();
                     me.listarPersona(1, '', 'nombre');
@@ -308,13 +332,15 @@
                     return;
                 }
                 let me = this;
-                axios.put("/cliente/actualizar", {
+                axios.put("/proveedor/actualizar", {
                     "nombre": this.nombre,
                     "tipo_documento": this.tipo_documento,
                     "num_documento": this.num_documento,
                     "direccion": this.direccion,
                     "telefono": this.telefono,
                     "email": this.email,
+                    "contacto": this.contacto,
+                    "telefono_contacto": this.telefono_contacto,
                     "id": this.persona_id
                 }).then(function (response) {
                     me.cerrarModal();
@@ -333,12 +359,14 @@
             cerrarModal() {
                 this.modal = 0;
                 this.tituloModal = "",
-                    this.nombre = "";
-                this.tipo_documento = "DNI";
+                this.nombre = "";
+                this.tipo_documento = "RUC";
                 this.num_documento = '';
                 this.direccion = '';
                 this.telefono = '';
                 this.email = '';
+                this.contacto = '';
+                this.telefono_contacto = '';
                 this.errorPersona = 0;
             },
             abrirModal(modelo, accion, data = []) {
@@ -347,13 +375,15 @@
                         switch (accion) {
                             case "registrar": {
                                 this.modal = 1;
-                                this.tituloModal = "Registrar Cliente";
+                                this.tituloModal = "Registrar Proveedor";
                                 this.nombre = "";
                                 this.tipo_documento = "DNI";
                                 this.num_documento = '';
                                 this.direccion = '';
                                 this.telefono = '';
                                 this.email = '';
+                                this.contacto = '';
+                                this.telefono_contacto = '';
                                 this.tipoAccion = 1;
                                 break;
                             }
@@ -368,6 +398,8 @@
                                 this.direccion = data['direccion'];
                                 this.telefono = data['telefono'];
                                 this.email = data['email'];
+                                this.contacto = data['contacto'];
+                                this.telefono_contacto = data['telefono_contacto'];
                                 break;
                             }
                         }
