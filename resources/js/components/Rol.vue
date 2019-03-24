@@ -10,14 +10,7 @@
             <!-- Ejemplo de tabla Listado -->
             <div class="card">
                 <div class="card-header">
-                    <i class="fa fa-align-justify"></i> Categorías
-                    <button
-                        type="button"
-                        @click="abrirModal('categoria', 'registrar')"
-                        class="btn btn-secondary"
-                    >
-                        <i class="icon-plus"></i>&nbsp;Nuevo
-                    </button>
+                    <i class="fa fa-align-justify"></i> Roles
                 </div>
                 <div class="card-body">
                     <div class="form-group row">
@@ -30,11 +23,11 @@
                                 <input
                                     type="text"
                                     v-model="buscar"
-                                    @keyup.enter="listarCategoria(1, buscar, criterio)"
+                                    @keyup.enter="listarRol(1, buscar, criterio)"
                                     class="form-control"
                                     placeholder="Texto a buscar"
                                 >
-                                <button type="submit" @click="listarCategoria(1, buscar, criterio)" class="btn btn-primary">
+                                <button type="submit" @click="listarRol(1, buscar, criterio)" class="btn btn-primary">
                                     <i class="fa fa-search"></i> Buscar
                                 </button>
                             </div>
@@ -43,37 +36,17 @@
                     <table class="table table-bordered table-striped table-sm">
                         <thead>
                         <tr>
-                            <th>Opciones</th>
                             <th>Nombre</th>
                             <th>Descripción</th>
                             <th>Estado</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="categoria in arrayCategoria" :key="categoria.id">
+                        <tr v-for="rol in arrayRol" :key="rol.id">
+                            <td v-text="rol.nombre"></td>
+                            <td v-text="rol.descripcion"></td>
                             <td>
-                                <button
-                                    type="button"
-                                    @click="abrirModal('categoria', 'actualizar', categoria)"
-                                    class="btn btn-warning btn-sm"
-                                >
-                                    <i class="icon-pencil"></i>
-                                </button> &nbsp;
-                                <template v-if="categoria.condicion">
-                                    <button type="button" class="btn btn-danger btn-sm" @click="desactivarCategoria(categoria.id)">
-                                        <i class="icon-trash"></i>
-                                    </button>
-                                </template>
-                                <template v-else>
-                                    <button type="button" class="btn btn-info btn-sm" @click="activarCategoria(categoria.id)">
-                                        <i class="icon-check"></i>
-                                    </button>
-                                </template>
-                            </td>
-                            <td v-text="categoria.nombre"></td>
-                            <td v-text="categoria.descripcion"></td>
-                            <td>
-                                <div v-if="categoria.condicion">
+                                <div v-if="rol.condicion">
                                     <span class="badge badge-success">Activo</span>
                                 </div>
                                 <div v-else>
@@ -100,72 +73,6 @@
             </div>
             <!-- Fin ejemplo de tabla Listado -->
         </div>
-        <!--Inicio del modal agregar/actualizar-->
-        <div
-            class="modal fade"
-            tabindex="-1"
-            :class="{'mostrar': modal}"
-            role="dialog"
-            aria-labelledby="myModalLabel"
-            style="display: none;"
-            aria-hidden="true"
-        >
-            <div class="modal-dialog modal-primary modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" v-text="tituloModal">Agregar categoría</h4>
-                        <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form action method="post" enctype="multipart/form-data" class="form-horizontal">
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
-                                <div class="col-md-9">
-                                    <input
-                                        type="text"
-                                        v-model="nombre"
-                                        class="form-control"
-                                        placeholder="Nombre de categoría"
-                                    >
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="email-input">Descripción</label>
-                                <div class="col-md-9">
-                                    <input
-                                        type="text"
-                                        v-model="descripcion"
-                                        class="form-control"
-                                        placeholder="Ingrese descripción"
-                                    >
-                                </div>
-                            </div>
-                            <div v-show="errorCategoria" class="form-group row div-error">
-                                <div class="text-center text-error">
-                                    <div v-for="error in errorMostrarMsCategoria" :key="error" v-text="error">
-
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                        <button type="button" v-if="tipoAccion == 1" class="btn btn-primary"
-                                @click="registrarCategoria()">Guardar
-                        </button>
-                        <button type="button" v-if="tipoAccion == 2" class="btn btn-primary"
-                                @click="actualizarCategoria()">Actualizar
-                        </button>
-                    </div>
-                </div>
-                <!-- /.modal-content -->
-            </div>
-            <!-- /.modal-dialog -->
-        </div>
-        <!--Fin del modal-->
     </main>
 </template>
 
@@ -173,15 +80,13 @@
     export default {
         data() {
             return {
-                categoria_id: 0,
+                rol_id: 0,
                 nombre: "",
                 descripcion: "",
-                arrayCategoria: [],
+                arrayRol: [],
                 modal: 0,
                 tituloModal: "",
                 tipoAccion: 0,
-                errorCategoria: 0,
-                errorMostrarMsCategoria: [],
                 pagination: {
                     'total': 0,
                     'current_page': 0,
@@ -225,13 +130,13 @@
             }
         },
         methods: {
-            listarCategoria(page, buscar, criterio) {
+            listarRol(page, buscar, criterio) {
                 let me = this;
-                var url = '/categoria?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+                var url = '/rol?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
                 axios.get(url)
                     .then(function (response) {
                         var respuesta = response.data;
-                        me.arrayCategoria = respuesta.categorias.data;
+                        me.arrayRol = respuesta.roles.data;
                         me.pagination = respuesta.pagination;
                     })
                     .catch(function (error) {
@@ -243,173 +148,11 @@
                 //Actualiza la página actual
                 me.pagination.current_page = page;
                 // Envia la petición para ver la data de esa página
-                me.listarCategoria(page, buscar, criterio);
-            },
-            registrarCategoria() {
-                if (this.validarCategoria()) {
-                    return;
-                }
-
-                let me = this;
-
-                axios.post("/categoria/registrar", {
-                    "nombre": this.nombre,
-                    "descripcion": this.descripcion
-                }).then(function (response) {
-                    me.cerrarModal();
-                    me.listarCategoria(1, '', 'nombre');
-                }).catch(function (error) {
-                    console.log(error);
-                });
-            },
-            actualizarCategoria() {
-                if (this.validarCategoria()) {
-                    return;
-                }
-
-                let me = this;
-
-                axios.put("/categoria/actualizar", {
-                    "nombre": this.nombre,
-                    "descripcion": this.descripcion,
-                    'id': this.categoria_id
-                }).then(function (response) {
-                    me.cerrarModal();
-                    me.listarCategoria(1, '', 'nombre');
-                }).catch(function (error) {
-                    console.log(error);
-                });
-            },
-            desactivarCategoria(id) {
-                const swalWithBootstrapButtons = Swal.mixin({
-                    customClass: {
-                        confirmButton: 'btn btn-success',
-                        cancelButton: 'btn btn-danger'
-                    },
-                    buttonsStyling: false,
-                })
-
-                swalWithBootstrapButtons.fire({
-                    title: '¿Estás seguro de desactivar la categoría?',
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Aceptar',
-                    cancelButtonText: 'Cancelar',
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.value) {
-
-                        let me = this;
-
-                        axios.put("/categoria/desactivar", {
-                            'id': id
-                        }).then(function (response) {
-                            me.listarCategoria(1, '', 'nombre');
-                            swalWithBootstrapButtons.fire(
-                                '¡Desactivado!',
-                                'El registro ha sido desactivado con éxito',
-                                'success'
-                            )
-                        }).catch(function (error) {
-                            console.log(error);
-                        });
-
-                    } else if (
-                        // Read more about handling dismissals
-                        result.dismiss === Swal.DismissReason.cancel
-                    ) {
-
-                    }
-                })
-            },
-            activarCategoria(id) {
-                const swalWithBootstrapButtons = Swal.mixin({
-                    customClass: {
-                        confirmButton: 'btn btn-success',
-                        cancelButton: 'btn btn-danger'
-                    },
-                    buttonsStyling: false,
-                })
-
-                swalWithBootstrapButtons.fire({
-                    title: '¿Estás seguro de activar esta categoría?',
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Aceptar',
-                    cancelButtonText: 'Cancelar',
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.value) {
-
-                        let me = this;
-
-                        axios.put("/categoria/activar", {
-                            'id': id
-                        }).then(function (response) {
-                            me.listarCategoria(1, '', 'nombre');
-                            swalWithBootstrapButtons.fire(
-                                '¡Activado!',
-                                'El registro ha sido activado con éxito',
-                                'success'
-                            )
-                        }).catch(function (error) {
-                            console.log(error);
-                        });
-
-                    } else if (
-                        // Read more about handling dismissals
-                        result.dismiss === Swal.DismissReason.cancel
-                    ) {
-
-                    }
-                })
-            },
-            validarCategoria() {
-                this.errorCategoria = 0;
-                this.errorMostrarMsCategoria = [];
-
-                if (!this.nombre) this.errorMostrarMsCategoria.push("El nombre de la categoría no puede estar vacío.");
-
-                if (this.errorMostrarMsCategoria.length) this.errorCategoria = 1;
-
-                return this.errorCategoria;
-            },
-            cerrarModal() {
-                this.modal = 0;
-                this.tituloModal = "",
-                    this.nombre = "";
-                this.descripcion = "";
-            },
-            abrirModal(modelo, accion, data = []) {
-                switch (modelo) {
-                    case "categoria": {
-                        switch (accion) {
-                            case "registrar": {
-                                this.modal = 1;
-                                this.tituloModal = "Registrar Categoria";
-                                this.nombre = "";
-                                this.descripcion = "";
-                                this.tipoAccion = 1;
-
-                                break;
-                            }
-                            case "actualizar": {
-                                // console.log(data);
-                                this.modal = 1;
-                                this.tituloModal = "Actualizar categoría";
-                                this.tipoAccion = 2;
-                                this.categoria_id = data['id'];
-                                this.nombre = data['nombre'];
-                                this.descripcion = data['descripcion'];
-                                break;
-                            }
-                        }
-                    }
-                }
+                me.listarRol(page, buscar, criterio);
             }
         },
         mounted() {
-            this.listarCategoria(1, this.buscar, this.criterio);
+            this.listarRol(1, this.buscar, this.criterio);
         }
     };
 </script>
