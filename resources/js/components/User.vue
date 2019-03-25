@@ -65,7 +65,17 @@
                                         class="btn btn-warning btn-sm"
                                 >
                                     <i class="icon-pencil"></i>
-                                </button>
+                                </button>&nbsp;
+                                <template v-if="persona.condicion">
+                                    <button type="button" class="btn btn-danger btn-sm" @click="desactivarUsuario(persona.id)">
+                                        <i class="icon-trash"></i>
+                                    </button>
+                                </template>
+                                <template v-else>
+                                    <button type="button" class="btn btn-info btn-sm" @click="activarUsuario(persona.id)">
+                                        <i class="icon-check"></i>
+                                    </button>
+                                </template>
                             </td>
                             <td v-text="persona.nombre"></td>
                             <td v-text="persona.tipo_documento"></td>
@@ -440,6 +450,90 @@
                         }
                     }
                 }
+            },
+            desactivarUsuario(id) {
+                const swalWithBootstrapButtons = Swal.mixin({
+                    customClass: {
+                        confirmButton: 'btn btn-success',
+                        cancelButton: 'btn btn-danger'
+                    },
+                    buttonsStyling: false,
+                })
+
+                swalWithBootstrapButtons.fire({
+                    title: '¿Estás seguro de desactivar este usuario?',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Aceptar',
+                    cancelButtonText: 'Cancelar',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.value) {
+
+                        let me = this;
+
+                        axios.put("/user/desactivar", {
+                            'id': id
+                        }).then(function (response) {
+                            me.listarPersona(1, '', 'nombre');
+                            swalWithBootstrapButtons.fire(
+                                '¡Desactivado!',
+                                'El registro ha sido desactivado con éxito',
+                                'success'
+                            )
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+
+                    } else if (
+                        // Read more about handling dismissals
+                        result.dismiss === Swal.DismissReason.cancel
+                    ) {
+
+                    }
+                })
+            },
+            activarUsuario(id) {
+                const swalWithBootstrapButtons = Swal.mixin({
+                    customClass: {
+                        confirmButton: 'btn btn-success',
+                        cancelButton: 'btn btn-danger'
+                    },
+                    buttonsStyling: false,
+                })
+
+                swalWithBootstrapButtons.fire({
+                    title: '¿Estás seguro de activar este usuario?',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Aceptar',
+                    cancelButtonText: 'Cancelar',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.value) {
+
+                        let me = this;
+
+                        axios.put("/user/activar", {
+                            'id': id
+                        }).then(function (response) {
+                            me.listarPersona(1, '', 'nombre');
+                            swalWithBootstrapButtons.fire(
+                                '¡Activado!',
+                                'El registro ha sido activado con éxito',
+                                'success'
+                            )
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+
+                    } else if (
+                        // Read more about handling dismissals
+                        result.dismiss === Swal.DismissReason.cancel
+                    ) {
+
+                    }
+                })
             }
         },
         mounted() {
