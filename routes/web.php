@@ -74,9 +74,18 @@ Route::group(['middleware' => ['auth']], function (){
         Route::post("cliente/registrar", "ClienteController@store");
         Route::put("cliente/actualizar", "ClienteController@update");
 
+        Route::get("rol", "RolController@index");
+        Route::get("rol/selectRol", "RolController@selectRol");
+
+        Route::get("user", "UserController@index");
+        Route::post("user/registrar", "UserController@store");
+        Route::put("user/actualizar", "UserController@update");
+        Route::put("user/desactivar", "UserController@desactivar");
+        Route::put("user/activar", "UserController@activar");
+
     });
 
 });
 
 
-Route::get('/home', 'HomeController@index')->name('home');
+//Route::get('/home', 'HomeController@index')->name('home');
