@@ -3981,15 +3981,16 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       var me = this;
-      axios.post("/proveedor/registrar", {
+      axios.post("/user/registrar", {
         "nombre": this.nombre,
         "tipo_documento": this.tipo_documento,
         "num_documento": this.num_documento,
         "direccion": this.direccion,
         "telefono": this.telefono,
         "email": this.email,
-        "contacto": this.contacto,
-        "telefono_contacto": this.telefono_contacto
+        "usuario": this.usuario,
+        "password": this.password,
+        'idrol': this.idrol
       }).then(function (response) {
         me.cerrarModal();
         me.listarPersona(1, '', 'nombre');
@@ -4003,15 +4004,16 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       var me = this;
-      axios.put("/proveedor/actualizar", {
+      axios.put("/user/actualizar", {
         "nombre": this.nombre,
         "tipo_documento": this.tipo_documento,
         "num_documento": this.num_documento,
         "direccion": this.direccion,
         "telefono": this.telefono,
         "email": this.email,
-        "contacto": this.contacto,
-        "telefono_contacto": this.telefono_contacto,
+        "usuario": this.usuario,
+        "password": this.password,
+        "idrol": this.idrol,
         "id": this.persona_id
       }).then(function (response) {
         me.cerrarModal();
@@ -4024,6 +4026,9 @@ __webpack_require__.r(__webpack_exports__);
       this.errorPersona = 0;
       this.errorMostrarMsPersona = [];
       if (!this.nombre) this.errorMostrarMsPersona.push("El nombre de la persona no puede estar vacío.");
+      if (!this.usuario) this.errorMostrarMsPersona.push("El nombre de usuario no puede estar vacío.");
+      if (!this.password) this.errorMostrarMsPersona.push("La contraseña no puede estar vacío.");
+      if (this.idrol === 0) this.errorMostrarMsPersona.push("Debes seleccionar un rol para el usuario");
       if (this.errorMostrarMsPersona.length) this.errorPersona = 1;
       return this.errorPersona;
     },
@@ -4036,7 +4041,7 @@ __webpack_require__.r(__webpack_exports__);
       this.telefono = '';
       this.email = '';
       this.usuario = '';
-      this.pasword = '';
+      this.password = '';
       this.idrol = 0;
       this.errorPersona = 0;
     },
