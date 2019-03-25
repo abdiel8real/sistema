@@ -11,9 +11,9 @@
 |
 */
 
-Route::get('/', function () {
+Route::get('main', function () {
     return view('contenido/contenido');
-});
+})->name('main');
 
 
 Route::get("categoria", "CategoriaController@index");
@@ -35,6 +35,8 @@ Route::put("cliente/actualizar", "ClienteController@update");
 Route::get("proveedor", "ProveedorController@index");
 Route::post("proveedor/registrar", "ProveedorController@store");
 Route::put("proveedor/actualizar", "ProveedorController@update");
-Auth::routes();
+
+Route::get('/', 'Auth\LoginController@showLoginForm');
+Route::post('login', 'Auth\LoginController@login')->name('login');
 
 Route::get('/home', 'HomeController@index')->name('home');
