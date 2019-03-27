@@ -47,7 +47,7 @@ Route::group(['middleware' => ['auth']], function (){
         Route::get("proveedor/selectProveedor", "ProveedorController@selectProveedor");
 
         Route::get('ingreso', 'IngresoController@index');
-        Route::post('ingreso/registar', 'IngresoController@store');
+        Route::post('ingreso/registrar', 'IngresoController@store');
         Route::put('ingreso/desactivar', 'IngresoController@desactivar');
 
     });
@@ -83,7 +83,7 @@ Route::group(['middleware' => ['auth']], function (){
         Route::get("proveedor/selectProveedor", "ProveedorController@selectProveedor");
 
         Route::get('ingreso', 'IngresoController@index');
-        Route::post('ingreso/registar', 'IngresoController@store');
+        Route::post('ingreso/registrar', 'IngresoController@store');
         Route::put('ingreso/desactivar', 'IngresoController@desactivar');
 
         Route::get("cliente", "ClienteController@index");

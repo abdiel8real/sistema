@@ -48,7 +48,7 @@
                             <thead>
                             <tr>
                                 <th>Opciones</th>
-                                <th>Nombre</th>
+                                <th>Usuario</th>
                                 <th>Proveedor</th>
                                 <th>Tipo Comprobante</th>
                                 <th>Serie Comprobante</th>
@@ -109,7 +109,7 @@
                     <div class="card-body">
                     <div class="form-group row border">
                         <div class="col-md-9">
-                            <div class="form-grip">
+                            <div class="form-group">
                                 <label>Proveedor(*)</label>
                                 <v-select
                                     :on-search="selectProveedor"
@@ -147,6 +147,15 @@
                             <div class="form-group">
                                 <label>Número Comprobante(*)</label>
                                     <input type="text" class="form-control" v-model="num_comprobante" placeholder="000xx">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div v-show="errorIngreso" class="form-group row div-error">
+                                <div class="text-center text-error">
+                                    <div v-for="error in errorMostrarMsjIngreso" :key="error" v-text="error">
+
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -194,12 +203,11 @@
                                 <tbody v-if="arrayDetalle.length">
                                     <tr v-for="(detalle, index) in arrayDetalle" :key="detalle.id">
                                         <td>
-                                            <button @click="eliminarDetalle(index)" class="btn btn-danger btn-sm">
+                                            <button @click="eliminarDetalle(index)" type="button" class="btn btn-danger btn-sm">
                                                 <i class="icon-close"></i>
                                             </button>
                                         </td>
                                         <td v-text="detalle.articulo">
-
                                         </td>
                                         <td>
                                             <input v-model="detalle.precio" type="number" value="3" class="form control">
@@ -216,7 +224,7 @@
                                         <td>$ {{totalParcial = (total - totalImpuesto).toFixed(2)}}</td>
                                     </tr>
                                     <tr style="background-color: #CEECF5">
-                                        <td colspan="4" align="right"><strong>Total Immpuesto:</strong></td>
+                                        <td colspan="4" align="right"><strong>Total Impuesto:</strong></td>
                                         <td>$ {{totalImpuesto = ((total*impuesto) / (1 + impuesto)).toFixed(2)}}</td>
                                     </tr>
                                     <tr style="background-color: #CEECF5">
@@ -259,7 +267,7 @@
             <div class="modal-dialog modal-primary modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title" v-text="tituloModal">Agregar Cliente</h4>
+                        <h4 class="modal-title" v-text="tituloModal"></h4>
                         <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
                             <span aria-hidden="true">×</span>
                         </button>
@@ -369,7 +377,7 @@
                 tituloModal: "",
                 tipoAccion: 0,
                 errorIngreso: 0,
-                errorMostrarMsIngreso: [],
+                errorMostrarMsjIngreso: [],
                 pagination: {
                     'total': 0,
                     'current_page': 0,
@@ -434,7 +442,6 @@
                 axios.get(url)
                     .then(function (response) {
                         var respuesta = response.data;
-                        console.log(respuesta);
                         me.arrayIngreso = respuesta.ingresos.data;
                         me.pagination = respuesta.pagination;
                     })
@@ -470,7 +477,7 @@
                     var respuesta = response.data;
                     me.arrayArticulo = respuesta.articulos;
                     
-                    if (me.arrayArticulo.length)
+                    if (me.arrayArticulo.length > 0)
                     {
                         me.articulo = me.arrayArticulo[0]['nombre'];
                         me.idarticulo = me.arrayArticulo[0]['id'];
@@ -491,24 +498,38 @@
                 // Envia la petición para ver la data de esa página
                 me.listarIngreso(page, buscar, criterio);
             },
-            registrarPersona() {
-                if (this.validarPersona()) {
+            registrarIngreso() {
+                if (this.validarIngreso()) {
                     return;
                 }
+
                 let me = this;
-                axios.post("/user/registrar", {
-                    "nombre": this.nombre,
-                    "tipo_documento": this.tipo_documento,
+
+                axios.post("/ingreso/registrar", {
+                    "idproveedor": this.idproveedor,
+                    "tipo_comprobante": this.tipo_comprobante,
                     "num_documento": this.num_documento,
-                    "direccion": this.direccion,
-                    "telefono": this.telefono,
-                    "email": this.email,
-                    "usuario": this.usuario,
-                    "password": this.password,
-                    'idrol': this.idrol
+                    "serie_comprobante": this.serie_comprobante,
+                    "num_comprobante": this.num_comprobante,
+                    "impuesto": this.impuesto,
+                    "total": this.total,
+                    "data": this.arrayDetalle
                 }).then(function (response) {
-                    me.cerrarModal();
-                    me.listarPersona(1, '', 'nombre');
+
+                    me.listado = 1;
+                    me.listarIngreso(1, '', 'num_comprobante');
+                    me.idproveedor = 0;
+                    me.tipo_comprobante = 'BOLETA';
+                    me.serie_comprobante = '';
+                    me.num_comprobante = '';
+                    me.impuesto = 0.18;
+                    me.total = 0.0;
+                    me.idarticulo = 0;
+                    me.articulo = '';
+                    me.cantidad = 0;
+                    me.precio = 0;
+                    me.arrayDetalle = [];
+
                 }).catch(function (error) {
                     console.log(error);
                 });
@@ -631,19 +652,36 @@
                     console.log(error);
                 });
             },
-            validarPersona() {
-                this.errorPersona = 0;
-                this.errorMostrarMsPersona = [];
-                if (!this.nombre) this.errorMostrarMsPersona.push("El nombre de la persona no puede estar vacío.");
-                if (!this.usuario) this.errorMostrarMsPersona.push("El nombre de usuario no puede estar vacío.");
-                if (!this.password) this.errorMostrarMsPersona.push("La contraseña no puede estar vacío.");
-                if (this.idrol === 0) this.errorMostrarMsPersona.push("Debes seleccionar un rol para el usuario");
-                if (this.errorMostrarMsPersona.length) this.errorPersona = 1;
-                return this.errorPersona;
+            validarIngreso() {
+                this.errorIngreso = 0;
+                this.errorMostrarMsjIngreso = [];
+
+                if (this.idproveedor == 0) this.errorMostrarMsjIngreso.push("Selecciona un proveedor");
+                if (this.tipo_comprobante == 0) this.errorMostrarMsjIngreso.push("Selecciona el comprobante");
+                if (!this.num_comprobante) this.errorMostrarMsjIngreso.push("Ingrese el número de comprobante");
+                if (!this.impuesto) this.errorMostrarMsjIngreso.push("Ingresa el impuesto de compra");
+                if (this.arrayDetalle.length <= 0) this.errorMostrarMsjIngreso.push("Ingresa detalles");
+
+                if (this.errorMostrarMsjIngreso.length) this.errorIngreso = 1;
+
+                return this.errorIngreso;
             },
             mostrarDetalle()
             {
-                this.listado = 0;
+                let me = this;
+                me.listado = 0;
+
+                me.idproveedor = 0;
+                me.tipo_comprobante = 'BOLETA';
+                me.serie_comprobante = '';
+                me.num_comprobante = '';
+                me.impuesto = 0.18;
+                me.total = 0.0;
+                me.idarticulo = 0;
+                me.articulo = '';
+                me.cantidad = 0;
+                me.precio = 0;
+                me.arrayDetalle = [];
             },
             ocultarDetalle()
             {
@@ -651,7 +689,7 @@
             },
             cerrarModal() {
                 this.modal = 0;
-                this.tituloModal = ''
+                this.tituloModal = '';
             },
             abrirModal() {
                 this.arrayArticulo = [];

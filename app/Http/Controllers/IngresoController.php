@@ -12,13 +12,13 @@ class IngresoController extends Controller
 {
     public function index(Request $request)
     {
-//        if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
 
         $buscar = $request -> buscar;
         $criterio = $request -> criterio;
 
         if ($buscar == ''){
-            $ingresos = Ingreso::join('personas', 'ingresos.id', '=', 'personas.id')
+            $ingresos = Ingreso::join('personas', 'ingresos.idproveedor', '=', 'personas.id')
                 ->join('users', 'ingresos.idusuario', '=', 'users.id')
                 ->select('ingresos.id', 'ingresos.tipo_comprobante', 'ingresos.serie_comprobante',
                     'ingresos.num_comprobante', 'ingresos.fecha_hora', 'ingresos.impuesto', 'ingresos.total',
@@ -26,11 +26,10 @@ class IngresoController extends Controller
                 ->orderBy('ingresos.id', 'desc')-> paginate(5);
         }
         else {
-            $ingresos = Ingreso::join('personas', 'ingresos.id', '=', 'personas.id')
+            $ingresos = Ingreso::join('personas', 'ingresos.idproveedor', '=', 'personas.id')
                 ->join('users', 'ingresos.idusuario', '=', 'users.id')
                 ->select('ingresos.id', 'ingresos.tipo_comprobante', 'ingresos.serie_comprobante',
                     'ingresos.num_comprobante', 'ingresos.fecha_hora', 'ingresos.impuesto', 'ingresos.total',
-                    'users.usuario', 'users.password',
                     'ingresos.estado', 'personas.nombre', 'users.usuario')
                 ->where('ingresos.' . $criterio, 'like', '%'. $buscar . '%')
                 ->orderBy('ingresos.id', 'desc') -> paginate(5);
@@ -63,7 +62,7 @@ class IngresoController extends Controller
             $ingreso = new Ingreso();
             $ingreso-> fill($request->all());
             $ingreso->idusuario = \Auth::user()->id;
-            $ingreso->fecha_hora = $mytime->toDateString();
+            $ingreso->fecha_hora = $mytime->toDateTimeString();
             $ingreso->estado = 'Registrado';
             $ingreso -> save();
 

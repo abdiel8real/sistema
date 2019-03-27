@@ -3385,6 +3385,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -3407,7 +3415,7 @@ __webpack_require__.r(__webpack_exports__);
       tituloModal: "",
       tipoAccion: 0,
       errorIngreso: 0,
-      errorMostrarMsIngreso: [],
+      errorMostrarMsjIngreso: [],
       pagination: {
         'total': 0,
         'current_page': 0,
@@ -3477,7 +3485,6 @@ __webpack_require__.r(__webpack_exports__);
       var url = '/ingreso?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
       axios.get(url).then(function (response) {
         var respuesta = response.data;
-        console.log(respuesta);
         me.arrayIngreso = respuesta.ingresos.data;
         me.pagination = respuesta.pagination;
       }).catch(function (error) {
@@ -3511,7 +3518,7 @@ __webpack_require__.r(__webpack_exports__);
         var respuesta = response.data;
         me.arrayArticulo = respuesta.articulos;
 
-        if (me.arrayArticulo.length) {
+        if (me.arrayArticulo.length > 0) {
           me.articulo = me.arrayArticulo[0]['nombre'];
           me.idarticulo = me.arrayArticulo[0]['id'];
         } else {
@@ -3529,25 +3536,35 @@ __webpack_require__.r(__webpack_exports__);
 
       me.listarIngreso(page, buscar, criterio);
     },
-    registrarPersona: function registrarPersona() {
-      if (this.validarPersona()) {
+    registrarIngreso: function registrarIngreso() {
+      if (this.validarIngreso()) {
         return;
       }
 
       var me = this;
-      axios.post("/user/registrar", {
-        "nombre": this.nombre,
-        "tipo_documento": this.tipo_documento,
+      axios.post("/ingreso/registrar", {
+        "idproveedor": this.idproveedor,
+        "tipo_comprobante": this.tipo_comprobante,
         "num_documento": this.num_documento,
-        "direccion": this.direccion,
-        "telefono": this.telefono,
-        "email": this.email,
-        "usuario": this.usuario,
-        "password": this.password,
-        'idrol': this.idrol
+        "serie_comprobante": this.serie_comprobante,
+        "num_comprobante": this.num_comprobante,
+        "impuesto": this.impuesto,
+        "total": this.total,
+        "data": this.arrayDetalle
       }).then(function (response) {
-        me.cerrarModal();
-        me.listarPersona(1, '', 'nombre');
+        me.listado = 1;
+        me.listarIngreso(1, '', 'num_comprobante');
+        me.idproveedor = 0;
+        me.tipo_comprobante = 'BOLETA';
+        me.serie_comprobante = '';
+        me.num_comprobante = '';
+        me.impuesto = 0.18;
+        me.total = 0.0;
+        me.idarticulo = 0;
+        me.articulo = '';
+        me.cantidad = 0;
+        me.precio = 0;
+        me.arrayDetalle = [];
       }).catch(function (error) {
         console.log(error);
       });
@@ -3657,18 +3674,31 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error);
       });
     },
-    validarPersona: function validarPersona() {
-      this.errorPersona = 0;
-      this.errorMostrarMsPersona = [];
-      if (!this.nombre) this.errorMostrarMsPersona.push("El nombre de la persona no puede estar vacío.");
-      if (!this.usuario) this.errorMostrarMsPersona.push("El nombre de usuario no puede estar vacío.");
-      if (!this.password) this.errorMostrarMsPersona.push("La contraseña no puede estar vacío.");
-      if (this.idrol === 0) this.errorMostrarMsPersona.push("Debes seleccionar un rol para el usuario");
-      if (this.errorMostrarMsPersona.length) this.errorPersona = 1;
-      return this.errorPersona;
+    validarIngreso: function validarIngreso() {
+      this.errorIngreso = 0;
+      this.errorMostrarMsjIngreso = [];
+      if (this.idproveedor == 0) this.errorMostrarMsjIngreso.push("Selecciona un proveedor");
+      if (this.tipo_comprobante == 0) this.errorMostrarMsjIngreso.push("Selecciona el comprobante");
+      if (!this.num_comprobante) this.errorMostrarMsjIngreso.push("Ingrese el número de comprobante");
+      if (!this.impuesto) this.errorMostrarMsjIngreso.push("Ingresa el impuesto de compra");
+      if (this.arrayDetalle.length <= 0) this.errorMostrarMsjIngreso.push("Ingresa detalles");
+      if (this.errorMostrarMsjIngreso.length) this.errorIngreso = 1;
+      return this.errorIngreso;
     },
     mostrarDetalle: function mostrarDetalle() {
-      this.listado = 0;
+      var me = this;
+      me.listado = 0;
+      me.idproveedor = 0;
+      me.tipo_comprobante = 'BOLETA';
+      me.serie_comprobante = '';
+      me.num_comprobante = '';
+      me.impuesto = 0.18;
+      me.total = 0.0;
+      me.idarticulo = 0;
+      me.articulo = '';
+      me.cantidad = 0;
+      me.precio = 0;
+      me.arrayDetalle = [];
     },
     ocultarDetalle: function ocultarDetalle() {
       this.listado = 1;
@@ -32327,7 +32357,7 @@ var render = function() {
                     _c("div", { staticClass: "col-md-9" }, [
                       _c(
                         "div",
-                        { staticClass: "form-grip" },
+                        { staticClass: "form-group" },
                         [
                           _c("label", [_vm._v("Proveedor(*)")]),
                           _vm._v(" "),
@@ -32478,6 +32508,36 @@ var render = function() {
                           }
                         })
                       ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-md-12" }, [
+                      _c(
+                        "div",
+                        {
+                          directives: [
+                            {
+                              name: "show",
+                              rawName: "v-show",
+                              value: _vm.errorIngreso,
+                              expression: "errorIngreso"
+                            }
+                          ],
+                          staticClass: "form-group row div-error"
+                        },
+                        [
+                          _c(
+                            "div",
+                            { staticClass: "text-center text-error" },
+                            _vm._l(_vm.errorMostrarMsjIngreso, function(error) {
+                              return _c("div", {
+                                key: error,
+                                domProps: { textContent: _vm._s(error) }
+                              })
+                            }),
+                            0
+                          )
+                        ]
+                      )
                     ])
                   ]),
                   _vm._v(" "),
@@ -32717,6 +32777,7 @@ var render = function() {
                                           {
                                             staticClass:
                                               "btn btn-danger btn-sm",
+                                            attrs: { type: "button" },
                                             on: {
                                               click: function($event) {
                                                 return _vm.eliminarDetalle(
@@ -32944,14 +33005,10 @@ var render = function() {
           [
             _c("div", { staticClass: "modal-content" }, [
               _c("div", { staticClass: "modal-header" }, [
-                _c(
-                  "h4",
-                  {
-                    staticClass: "modal-title",
-                    domProps: { textContent: _vm._s(_vm.tituloModal) }
-                  },
-                  [_vm._v("Agregar Cliente")]
-                ),
+                _c("h4", {
+                  staticClass: "modal-title",
+                  domProps: { textContent: _vm._s(_vm.tituloModal) }
+                }),
                 _vm._v(" "),
                 _c(
                   "button",
@@ -33234,7 +33291,7 @@ var staticRenderFns = [
       _c("tr", [
         _c("th", [_vm._v("Opciones")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Nombre")]),
+        _c("th", [_vm._v("Usuario")]),
         _vm._v(" "),
         _c("th", [_vm._v("Proveedor")]),
         _vm._v(" "),
@@ -33285,7 +33342,7 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("td", { attrs: { colspan: "4", align: "right" } }, [
-      _c("strong", [_vm._v("Total Immpuesto:")])
+      _c("strong", [_vm._v("Total Impuesto:")])
     ])
   },
   function() {
