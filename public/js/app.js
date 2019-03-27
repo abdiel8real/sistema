@@ -3521,6 +3521,10 @@ __webpack_require__.r(__webpack_exports__);
         }
       }
     },
+    eliminarDetalle: function eliminarDetalle(index) {
+      var me = this;
+      me.arrayDetalle.splice(index, 1);
+    },
     actualizarPersona: function actualizarPersona() {
       if (this.validarPersona()) {
         return;
@@ -32634,9 +32638,32 @@ var render = function() {
                             ? _c(
                                 "tbody",
                                 [
-                                  _vm._l(_vm.arrayDetalle, function(detalle) {
+                                  _vm._l(_vm.arrayDetalle, function(
+                                    detalle,
+                                    index
+                                  ) {
                                     return _c("tr", { key: detalle.id }, [
-                                      _vm._m(3, true),
+                                      _c("td", [
+                                        _c(
+                                          "button",
+                                          {
+                                            staticClass:
+                                              "btn btn-danger btn-sm",
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.eliminarDetalle(
+                                                  index
+                                                )
+                                              }
+                                            }
+                                          },
+                                          [
+                                            _c("i", {
+                                              staticClass: "icon-close"
+                                            })
+                                          ]
+                                        )
+                                      ]),
                                       _vm._v(" "),
                                       _c("td", {
                                         domProps: {
@@ -32712,15 +32739,15 @@ var render = function() {
                                     ])
                                   }),
                                   _vm._v(" "),
+                                  _vm._m(3),
+                                  _vm._v(" "),
                                   _vm._m(4),
                                   _vm._v(" "),
-                                  _vm._m(5),
-                                  _vm._v(" "),
-                                  _vm._m(6)
+                                  _vm._m(5)
                                 ],
                                 2
                               )
-                            : _c("tbody", [_vm._m(7)])
+                            : _c("tbody", [_vm._m(6)])
                         ]
                       )
                     ])
@@ -32925,16 +32952,6 @@ var staticRenderFns = [
         _c("th", [_vm._v("Cantidad")]),
         _vm._v(" "),
         _c("th", [_vm._v("Subtotal")])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("td", [
-      _c("button", { staticClass: "btn btn-danger btn-sm" }, [
-        _c("i", { staticClass: "icon-close" })
       ])
     ])
   },
