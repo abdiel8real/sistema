@@ -175,7 +175,7 @@
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <button class="btn btn-success form-control btnagregar"><i class="icon-plus"></i></button>
+                                <button @click="agregarDetalle()" class="btn btn-success form-control btnagregar"><i class="icon-plus"></i></button>
                             </div>
                         </div>
                     </div>
@@ -191,39 +191,24 @@
                                         <th>Subtotal</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
+                                <tbody v-if="arrayDetalle.length">
+                                    <tr v-for="detalle in arrayDetalle" :key="detalle.id">
                                         <td>
                                             <button class="btn btn-danger btn-sm">
                                                 <i class="icon-close"></i>
                                             </button>
                                         </td>
-                                        <td>Artículo n</td>
-                                        <td>
-                                            <input type="number" value="3" class="form control">
+                                        <td v-text="detalle.articulo">
+
                                         </td>
                                         <td>
-                                            <input type="number" value="2" class="form control">
+                                            <input v-model="detalle.precio" type="number" value="3" class="form control">
                                         </td>
                                         <td>
-                                            $ 6.00
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <button class="btn btn-danger btn-sm">
-                                                <i class="icon-close"></i>
-                                            </button>
-                                        </td>
-                                        <td>Artículo n</td>
-                                        <td>
-                                            <input type="number" value="3" class="form control">
+                                            <input v-model="detalle.cantidad" type="number" value="2" class="form control">
                                         </td>
                                         <td>
-                                            <input type="number" value="2" class="form control">
-                                        </td>
-                                        <td>
-                                            $ 6.00
+                                            {{detalle.precio*detalle.cantidad}}
                                         </td>
                                     </tr>
                                     <tr style="background-color: #CEECF5">
@@ -237,6 +222,13 @@
                                     <tr style="background-color: #CEECF5">
                                         <td colspan="4" align="right"><strong>Total Neto:</strong></td>
                                         <td>$ 6</td>
+                                    </tr>
+                                </tbody>
+                                <tbody v-else>
+                                    <tr>
+                                        <td colspan="5">
+                                            No hay artículos agregados
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -448,6 +440,16 @@
                 }).catch(function (error) {
                     console.log(error);
                 });
+            },
+            agregarDetalle(){
+                let me = this;
+                me.arrayDetalle.push({
+                    idarticulo: me.idarticulo,
+                    articulo: me.articulo,
+                    cantidad: me.cantidad,
+                    precio: me.precio
+                })
+
             },
             actualizarPersona() {
                 if (this.validarPersona()) {
