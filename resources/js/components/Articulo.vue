@@ -173,9 +173,9 @@
                                     >
                                 </div>
                             </div>
-                            <div v-show="errorCategoria" class="form-group row div-error">
+                            <div v-show="errorArticulo" class="form-group row div-error">
                                 <div class="text-center text-error">
-                                    <div v-for="error in errorMostrarMsCategoria" :key="error" v-text="error">
+                                    <div v-for="error in errorMostrarMsjArticulo" :key="error" v-text="error">
 
                                     </div>
                                 </div>
@@ -219,7 +219,7 @@
                 tituloModal: "",
                 tipoAccion: 0,
                 errorArticulo: 0,
-                errorMostrarMsArticulo: [],
+                errorMostrarMsjArticulo: [],
                 pagination: {
                     'total': 0,
                     'current_page': 0,
@@ -230,7 +230,8 @@
                 },
                 offset: 3,
                 criterio: 'nombre',
-                buscar: ''
+                buscar: '',
+                arrayCategoria: []
             };
         },
         components: {
@@ -275,6 +276,18 @@
                         me.arrayArticulo = respuesta.articulos.data;
                         me.pagination = respuesta.pagination;
                     })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            selectCategoria(){
+                let me=this;
+                var url= '/categoria/selectCategoria';
+                axios.get(url).then(function (response) {
+                    //console.log(response);
+                    var respuesta= response.data;
+                    me.arrayCategoria = respuesta.categorias;
+                })
                     .catch(function (error) {
                         console.log(error);
                     });
@@ -415,23 +428,23 @@
             },
             validarArticulo() {
                 this.errorArticulo = 0;
-                this.errorMostrarMsArticulo = [];
+                this.errorMostrarMsjArticulo = [];
 
-                if (this.idcategoria == 0) this.errorMostrarMsArticulo.push("Seleccione una categoría.");
-                if (!this.nombre) this.errorMostrarMsArticulo.push("El nombre del artículo no puede estar vacío.");
-                if (!this.stock) this.errorMostrarMsArticulo.push("El stock del artículo debe ser un número y no puede estar vacío.");
-                if (!this.precio_venta) this.errorMostrarMsArticulo.push("El precio venta del artículo debe ser un número y no puede estar vacío.");
+                if (this.idcategoria == 0) this.errorMostrarMsjArticulo.push("Seleccione una categoría.");
+                if (!this.nombre) this.errorMostrarMsjArticulo.push("El nombre del artículo no puede estar vacío.");
+                if (!this.stock) this.errorMostrarMsjArticulo.push("El stock del artículo debe ser un número y no puede estar vacío.");
+                if (!this.precio_venta) this.errorMostrarMsjArticulo.push("El precio venta del artículo debe ser un número y no puede estar vacío.");
 
-                if (this.errorMostrarMsArticulo.length) this.errorArticulo = 1;
+                if (this.errorMostrarMsjArticulo.length) this.errorArticulo = 1;
 
                 return this.errorArticulo;
             },
             cerrarModal() {
                 this.modal = 0;
-                this.tituloModal = "",
-                this.idcategoria = 0,
-                this.nombre_categoria = '',
-                this.codigo = '',
+                this.tituloModal = "";
+                this.idcategoria = 0;
+                this.nombre_categoria = '';
+                this.codigo = '';
                 this.nombre = "";
                 this.precio_venta = 0;
                 this.stock = 0;
@@ -440,12 +453,13 @@
             },
             abrirModal(modelo, accion, data = []) {
                 switch (modelo) {
-                    case "categoria": {
+                    case "articulo": {
                         switch (accion) {
                             case "registrar": {
                                 this.modal = 1;
                                 this.tituloModal = "Registrar Artículo";
                                 this.idcategoria = 0;
+                                this.nombre_categoria = '';
                                 this.codigo = '';
                                 this.nombre = "";
                                 this.precio_venta = 0;
@@ -456,7 +470,7 @@
                             }
                             case "actualizar": {
                                 this.modal = 1;
-                                this.tituloModal = "Actualizar categoría";
+                                this.tituloModal = "Actualizar Artículo";
                                 this.tipoAccion = 2;
                                 this.articulo_id = data['id'];
                                 this.idcategoria = data['idcategoria'];
@@ -470,6 +484,7 @@
                         }
                     }
                 }
+                this.selectCategoria();
             }
         },
         mounted() {
