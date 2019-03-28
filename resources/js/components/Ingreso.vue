@@ -20,7 +20,7 @@
                     </button>
                 </div>
                 <!-- Listado -->
-                <template v-if="listado">
+                <template v-if="listado == 1">
                     <div class="card-body">
                     <div class="form-group row">
                         <div class="col-md-6">
@@ -64,7 +64,7 @@
                                 <td>
                                     <button
                                             type="button"
-                                            @click="abrirModal('ingreso', 'actualizar', ingreso)"
+                                            @click="verIngreso(ingreso.id)"
                                             class="btn btn-success btn-sm"
                                     >
                                         <i class="icon-eye"></i>
@@ -105,7 +105,7 @@
                 </template>
                 <!-- Fin Listado -->
                 <!-- Detalle -->
-                <template v-else>
+                <template v-else-if="listado == 0">
                     <div class="card-body">
                     <div class="form-group row border">
                         <div class="col-md-9">
@@ -252,6 +252,93 @@
                 </div>
                 </template>
                 <!-- Fin Detalle -->
+                <!-- Ver ingreso -->
+                <template v-else-if="listado == 2">
+                    <div class="card-body">
+                        <div class="form-group row border">
+                            <div class="col-md-9">
+                                <div class="form-group">
+                                    <label>Proveedor</label>
+                                    <p v-text="proveedor"></p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Impuesto</label>
+                                <p v-text="impuesto"></p>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Tipo Comprobante</label>
+                                    <p v-text="tipo_comprobante"></p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Serie Comprobante</label>
+                                    <p v-text="serie_comprobante"></p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Número Comprobante</label>
+                                    <p v-text="num_comprobante"></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row border">
+                            <div class="table-responsive col-md-12">
+                                <table class="table table-bordered table-striped table-sm">
+                                    <thead>
+                                    <tr>
+                                        <th>Artículo</th>
+                                        <th>Precio</th>
+                                        <th>Cantidad</th>
+                                        <th>Subtotal</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody v-if="arrayDetalle.length">
+                                    <tr v-for="(detalle) in arrayDetalle" :key="detalle.id">
+                                        <td v-text="detalle.articulo">
+                                        </td>
+                                        <td v-text="detalle.precio">
+                                        </td>
+                                        <td v-text="detalle.cantidad">
+                                        </td>
+                                        <td>
+                                            {{detalle.precio*detalle.cantidad}}
+                                        </td>
+                                    </tr>
+                                    <tr style="background-color: #CEECF5">
+                                        <td colspan="3" align="right"><strong>Total Parcial:</strong></td>
+                                        <td>$ {{totalParcial = (total - totalImpuesto).toFixed(2)}}</td>
+                                    </tr>
+                                    <tr style="background-color: #CEECF5">
+                                        <td colspan="3" align="right"><strong>Total Impuesto:</strong></td>
+                                        <td>$ {{totalImpuesto = ((total*impuesto)).toFixed(2)}}</td>
+                                    </tr>
+                                    <tr style="background-color: #CEECF5">
+                                        <td colspan="3" align="right"><strong>Total Neto:</strong></td>
+                                        <td>$ {{total}}</td>
+                                    </tr>
+                                    </tbody>
+                                    <tbody v-else>
+                                    <tr>
+                                        <td colspan="5">
+                                            No hay artículos agregados
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <button type="button" class="btn btn-secondary" @click="ocultarDetalle()">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                <!-- Fin ver ingreso -->
             </div>
             <!-- Fin ejemplo de tabla Listado -->
         </div>
@@ -362,6 +449,7 @@
             return {
                 ingreso_id: 0,
                 idproveedor: 0,
+                proveedor: '',
                 nombre: "",
                 tipo_comprobante: "BOLETA",
                 serie_comprobante: "",
@@ -685,6 +773,39 @@
             ocultarDetalle()
             {
                 this.listado = 1;
+            },
+            verIngreso(id)
+            {
+                let me = this;
+                me.listado = 2;
+                // Obtener los datos del ingreso
+                var arrayIngresoT = [];
+                var url = '/ingreso/obtenerCabecera?id=' + id;
+                axios.get(url)
+                    .then(function (response) {
+                        var respuesta = response.data;
+                        arrayIngresoT = respuesta.ingreso;
+                        me.proveedor = arrayIngresoT[0]['nombre'];
+                        me.tipo_comprobante = arrayIngresoT[0]['tipo_comprobante'];
+                        me.serie_comprobante = arrayIngresoT[0]['serie_comprobante'];
+                        me.num_comprobante = arrayIngresoT[0]['num_comprobante'];
+                        me.impuesto = arrayIngresoT[0]['impuesto'];
+                        me.total = arrayIngresoT[0]['total'];
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+
+                // Obtener los datos del detalles
+                var urld = '/ingreso/obtenerDetalles?id=' + id;
+                axios.get(urld)
+                    .then(function (response) {
+                        var respuesta = response.data;
+                        me.arrayDetalle = respuesta.detalles;
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
             },
             cerrarModal() {
                 this.modal = 0;
