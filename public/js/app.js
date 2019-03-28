@@ -5395,6 +5395,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -5437,7 +5439,8 @@ __webpack_require__.r(__webpack_exports__);
       articulo: '',
       precio: 0,
       cantidad: 0,
-      ddescuento: 0
+      descuento: 0,
+      stock: 0
     };
   },
   components: {
@@ -5477,7 +5480,7 @@ __webpack_require__.r(__webpack_exports__);
     calcularTotal: function calcularTotal() {
       var resultado = 0.0;
       this.arrayDetalle.forEach(function (detalle) {
-        resultado = resultado + detalle.precio * detalle.cantidad;
+        resultado = resultado + (detalle.precio * detalle.cantidad - detalle.descuento);
       });
       return resultado;
     }
@@ -5516,7 +5519,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     buscarArticulo: function buscarArticulo() {
       var me = this;
-      var url = '/articulo/buscarArticulo?filtro=' + me.codigo;
+      var url = '/articulo/buscarArticuloVenta?filtro=' + me.codigo;
       axios.get(url).then(function (response) {
         var respuesta = response.data;
         me.arrayArticulo = respuesta.articulos;
@@ -5524,6 +5527,8 @@ __webpack_require__.r(__webpack_exports__);
         if (me.arrayArticulo.length > 0) {
           me.articulo = me.arrayArticulo[0]['nombre'];
           me.idarticulo = me.arrayArticulo[0]['id'];
+          me.precio = me.arrayArticulo[0]['precio'];
+          me.stock = me.arrayArticulo[0]['stock'];
         } else {
           me.articulo = 'No existe artículo';
           me.idarticulo = 0;
@@ -5599,17 +5604,37 @@ __webpack_require__.r(__webpack_exports__);
             text: 'Ese artículo ya ha sido agregado'
           });
         } else {
-          me.arrayDetalle.push({
-            idarticulo: me.idarticulo,
-            articulo: me.articulo,
-            cantidad: me.cantidad,
-            precio: me.precio
-          });
-          me.codigo = "";
-          me.idarticulo = 0;
-          me.articulo = "";
-          me.cantidad = 0;
-          me.precio = 0;
+          if (me.cantidad > me.stock) {
+            var _swalWithBootstrapButtons = Swal.mixin({
+              customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
+              },
+              buttonsStyling: false
+            });
+
+            _swalWithBootstrapButtons.fire({
+              title: 'Error...',
+              type: 'error',
+              text: '¡No hay stock disponible!'
+            });
+          } else {
+            me.arrayDetalle.push({
+              idarticulo: me.idarticulo,
+              articulo: me.articulo,
+              cantidad: me.cantidad,
+              precio: me.precio,
+              descuento: me.descuento,
+              stock: me.stock
+            });
+            me.codigo = "";
+            me.idarticulo = 0;
+            me.articulo = "";
+            me.cantidad = 0;
+            me.precio = 0;
+            me.descuento = 0;
+            me.stock = 0;
+          }
         }
       }
     },
@@ -5635,13 +5660,15 @@ __webpack_require__.r(__webpack_exports__);
           idarticulo: data['id'],
           articulo: data['nombre'],
           cantidad: 1,
-          precio: 1
+          precio: data['precio_venta'],
+          descuento: 0,
+          stock: data['stock']
         });
       }
     },
     listarArticulo: function listarArticulo(buscar, criterio) {
       var me = this;
-      var url = '/articulo/listarArticulo?buscar=' + buscar + '&criterio=' + criterio;
+      var url = '/articulo/listarArticuloVenta?buscar=' + buscar + '&criterio=' + criterio;
       axios.get(url).then(function (response) {
         var respuesta = response.data;
         me.arrayArticulo = respuesta.articulos.data;
@@ -37086,6 +37113,29 @@ var render = function() {
                                       ]),
                                       _vm._v(" "),
                                       _c("td", [
+                                        _c(
+                                          "span",
+                                          {
+                                            directives: [
+                                              {
+                                                name: "show",
+                                                rawName: "v-show",
+                                                value:
+                                                  detalle.cantidad >
+                                                  detalle.stock,
+                                                expression:
+                                                  "detalle.cantidad > detalle.stock"
+                                              }
+                                            ],
+                                            staticStyle: { color: "red" }
+                                          },
+                                          [
+                                            _vm._v(
+                                              "Stock: " + _vm._s(detalle.stock)
+                                            )
+                                          ]
+                                        ),
+                                        _vm._v(" "),
                                         _c("input", {
                                           directives: [
                                             {
@@ -37114,6 +37164,26 @@ var render = function() {
                                       ]),
                                       _vm._v(" "),
                                       _c("td", [
+                                        _c(
+                                          "span",
+                                          {
+                                            directives: [
+                                              {
+                                                name: "show",
+                                                rawName: "v-show",
+                                                value:
+                                                  detalle.descuento >
+                                                  detalle.precio *
+                                                    detalle.cantidad,
+                                                expression:
+                                                  "detalle.descuento > (detalle.precio * detalle.cantidad)"
+                                              }
+                                            ],
+                                            staticStyle: { color: "red" }
+                                          },
+                                          [_vm._v("Descuento superior")]
+                                        ),
+                                        _vm._v(" "),
                                         _c("input", {
                                           directives: [
                                             {
@@ -37147,7 +37217,9 @@ var render = function() {
                                         _vm._v(
                                           "\n                                        " +
                                             _vm._s(
-                                              detalle.precio * detalle.cantidad
+                                              detalle.precio *
+                                                detalle.cantidad -
+                                                detalle.descuento
                                             ) +
                                             "\n                                    "
                                         )

@@ -220,13 +220,15 @@
                                             <input v-model="detalle.precio" type="number" class="form control">
                                         </td>
                                         <td>
+                                            <span style="color: red;" v-show="detalle.cantidad > detalle.stock">Stock: {{detalle.stock}}</span>
                                             <input v-model="detalle.cantidad" type="number" class="form control">
                                         </td>
                                         <td>
+                                            <span style="color: red;" v-show="detalle.descuento > (detalle.precio * detalle.cantidad)">Descuento superior</span>
                                             <input v-model="detalle.descuento" type="number" class="form control">
                                         </td>
                                         <td>
-                                            {{detalle.precio*detalle.cantidad}}
+                                            {{detalle.precio * detalle.cantidad - detalle.descuento}}
                                         </td>
                                     </tr>
                                     <tr style="background-color: #CEECF5">
@@ -494,7 +496,8 @@
                 articulo: '',
                 precio: 0,
                 cantidad: 0,
-                ddescuento: 0
+                descuento: 0,
+                stock: 0
             };
         },
         components: {
@@ -528,7 +531,7 @@
             calcularTotal: function () {
                 let resultado = 0.0;
                 this.arrayDetalle.forEach(function (detalle) {
-                    resultado = resultado + (detalle.precio * detalle.cantidad)
+                    resultado = resultado + (detalle.precio * detalle.cantidad - detalle.descuento)
                 })
                 return resultado;
             }
@@ -569,7 +572,7 @@
             },
             buscarArticulo(){
                 let me = this;
-                var url = '/articulo/buscarArticulo?filtro=' + me.codigo;
+                var url = '/articulo/buscarArticuloVenta?filtro=' + me.codigo;
 
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
@@ -578,6 +581,8 @@
                     {
                         me.articulo = me.arrayArticulo[0]['nombre'];
                         me.idarticulo = me.arrayArticulo[0]['id'];
+                        me.precio = me.arrayArticulo[0]['precio'];
+                        me.stock = me.arrayArticulo[0]['stock'];
                     }
                     else {
                         me.articulo = 'No existe artículo';
@@ -666,17 +671,39 @@
                     }
                     else
                     {
-                        me.arrayDetalle.push({
-                            idarticulo: me.idarticulo,
-                            articulo: me.articulo,
-                            cantidad: me.cantidad,
-                            precio: me.precio
-                        });
-                        me.codigo = "";
-                        me.idarticulo = 0;
-                        me.articulo = "";
-                        me.cantidad = 0;
-                        me.precio = 0;
+                        if (me.cantidad > me.stock)
+                        {
+                            const swalWithBootstrapButtons = Swal.mixin({
+                                customClass: {
+                                    confirmButton: 'btn btn-success',
+                                    cancelButton: 'btn btn-danger'
+                                },
+                                buttonsStyling: false,
+                            })
+                            swalWithBootstrapButtons.fire({
+                                title: 'Error...',
+                                type: 'error',
+                                text: '¡No hay stock disponible!'
+                            })
+                        }
+                        else
+                        {
+                            me.arrayDetalle.push({
+                                idarticulo: me.idarticulo,
+                                articulo: me.articulo,
+                                cantidad: me.cantidad,
+                                precio: me.precio,
+                                descuento: me.descuento,
+                                stock: me.stock
+                            });
+                            me.codigo = "";
+                            me.idarticulo = 0;
+                            me.articulo = "";
+                            me.cantidad = 0;
+                            me.precio = 0;
+                            me.descuento = 0;
+                            me.stock = 0;
+                        }
                     }
                 }
 
@@ -704,14 +731,16 @@
                         idarticulo: data['id'],
                         articulo: data['nombre'],
                         cantidad: 1,
-                        precio: 1
+                        precio: data['precio_venta'],
+                        descuento: 0,
+                        stock: data['stock']
                     });
                 }
 
             },
             listarArticulo(buscar, criterio) {
                 let me = this;
-                var url = '/articulo/listarArticulo?buscar=' + buscar + '&criterio=' + criterio;
+                var url = '/articulo/listarArticuloVenta?buscar=' + buscar + '&criterio=' + criterio;
                 axios.get(url)
                     .then(function (response) {
                         var respuesta = response.data;
