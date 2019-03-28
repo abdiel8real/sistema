@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\DetalleVenta;
 use App\Venta;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 

@@ -263,14 +263,14 @@
                     </div>
                 </template>
                 <!-- Fin Detalle -->
-                <!-- Ver ingreso -->
+                <!-- Ver venta -->
                 <template v-else-if="listado == 2">
                     <div class="card-body">
                         <div class="form-group row border">
                             <div class="col-md-9">
                                 <div class="form-group">
-                                    <label>Proveedor</label>
-                                    <p v-text="proveedor"></p>
+                                    <label>Cliente</label>
+                                    <p v-text="cliente"></p>
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -304,6 +304,7 @@
                                         <th>Artículo</th>
                                         <th>Precio</th>
                                         <th>Cantidad</th>
+                                        <th>Descuento</th>
                                         <th>Subtotal</th>
                                     </tr>
                                     </thead>
@@ -315,20 +316,22 @@
                                         </td>
                                         <td v-text="detalle.cantidad">
                                         </td>
+                                        <td v-text="detalle.descuento">
+                                        </td>
                                         <td>
-                                            {{detalle.precio*detalle.cantidad}}
+                                            {{detalle.precio * detalle.cantidad - detalle.descuento}}
                                         </td>
                                     </tr>
                                     <tr style="background-color: #CEECF5">
-                                        <td colspan="3" align="right"><strong>Total Parcial:</strong></td>
+                                        <td colspan="4" align="right"><strong>Total Parcial:</strong></td>
                                         <td>$ {{totalParcial = (total - totalImpuesto).toFixed(2)}}</td>
                                     </tr>
                                     <tr style="background-color: #CEECF5">
-                                        <td colspan="3" align="right"><strong>Total Impuesto:</strong></td>
+                                        <td colspan="4" align="right"><strong>Total Impuesto:</strong></td>
                                         <td>$ {{totalImpuesto = ((total*impuesto)).toFixed(2)}}</td>
                                     </tr>
                                     <tr style="background-color: #CEECF5">
-                                        <td colspan="3" align="right"><strong>Total Neto:</strong></td>
+                                        <td colspan="4" align="right"><strong>Total Neto:</strong></td>
                                         <td>$ {{total}}</td>
                                     </tr>
                                     </tbody>
@@ -349,7 +352,7 @@
                         </div>
                     </div>
                 </template>
-                <!-- Fin ver ingreso -->
+                <!-- Fin ver venta -->
             </div>
             <!-- Fin ejemplo de tabla Listado -->
         </div>
@@ -600,15 +603,15 @@
                 // Envia la petición para ver la data de esa página
                 me.listarVenta(page, buscar, criterio);
             },
-            registrarIngreso() {
-                if (this.validarIngreso()) {
+            registrarVenta() {
+                if (this.validarVenta()) {
                     return;
                 }
 
                 let me = this;
 
-                axios.post("/ingreso/registrar", {
-                    "idproveedor": this.idproveedor,
+                axios.post("/venta/registrar", {
+                    "idcliente": this.idcliente,
                     "tipo_comprobante": this.tipo_comprobante,
                     "num_documento": this.num_documento,
                     "serie_comprobante": this.serie_comprobante,
@@ -619,8 +622,8 @@
                 }).then(function (response) {
 
                     me.listado = 1;
-                    me.listarIngreso(1, '', 'num_comprobante');
-                    me.idproveedor = 0;
+                    me.listarVenta(1, '', 'num_comprobante');
+                    me.idcliente = 0;
                     me.tipo_comprobante = 'BOLETA';
                     me.serie_comprobante = '';
                     me.num_comprobante = '';
@@ -630,6 +633,9 @@
                     me.articulo = '';
                     me.cantidad = 0;
                     me.precio = 0;
+                    me.stock = 0;
+                    me.codigo = '';
+                    me.descuento = 0;
                     me.arrayDetalle = [];
                 }).catch(function (error) {
                     console.log(error);
@@ -777,19 +783,30 @@
                     console.log(error);
                 });
             },
-            validarIngreso() {
-                this.errorIngreso = 0;
-                this.errorMostrarMsjIngreso = [];
+            validarVenta() {
 
-                if (this.idproveedor == 0) this.errorMostrarMsjIngreso.push("Selecciona un proveedor");
-                if (this.tipo_comprobante == 0) this.errorMostrarMsjIngreso.push("Selecciona el comprobante");
-                if (!this.num_comprobante) this.errorMostrarMsjIngreso.push("Ingrese el número de comprobante");
-                if (!this.impuesto) this.errorMostrarMsjIngreso.push("Ingresa el impuesto de compra");
-                if (this.arrayDetalle.length <= 0) this.errorMostrarMsjIngreso.push("Ingresa detalles");
+                let me = this;
+                me.errorVenta = 0;
+                me.errorMostrarMsjVenta = [];
+                let art;
 
-                if (this.errorMostrarMsjIngreso.length) this.errorIngreso = 1;
+                me.arrayDetalle.map(function (detalle) {
+                    if (detalle.cantidad > detalle.stock)
+                    {
+                        art = detalle.articulo + " con stock insuficiente";
+                        me.errorMostrarMsjVenta.push(art);
+                    }
+                })
 
-                return this.errorIngreso;
+                if (me.idcliente == 0) me.errorMostrarMsjVenta.push("Selecciona un proveedor");
+                if (me.tipo_comprobante == 0) me.errorMostrarMsjVenta.push("Selecciona el comprobante");
+                if (!me.num_comprobante) me.errorMostrarMsjVenta.push("Ingrese el número de comprobante");
+                if (!me.impuesto) me.errorMostrarMsjVenta.push("Ingresa el impuesto de compra");
+                if (me.arrayDetalle.length <= 0) me.errorMostrarMsjVenta.push("Ingresa detalles");
+
+                if (me.errorMostrarMsjVenta.length) me.errorVenta = 1;
+
+                return me.errorVenta;
             },
             mostrarDetalle()
             {
@@ -815,6 +832,38 @@
             cerrarModal() {
                 this.modal = 0;
                 this.tituloModal = '';
+            },
+            verVenta(id)
+            {
+                let me = this;
+                me.listado = 2;
+                // Obtener los datos del ingreso
+                var arrayVentaT = [];
+                var url = '/venta/obtenerCabecera?id=' + id;
+                axios.get(url)
+                    .then(function (response) {
+                        var respuesta = response.data;
+                        arrayVentaT = respuesta.venta;
+                        me.cliente = arrayVentaT[0]['nombre'];
+                        me.tipo_comprobante = arrayVentaT[0]['tipo_comprobante'];
+                        me.serie_comprobante = arrayVentaT[0]['serie_comprobante'];
+                        me.num_comprobante = arrayVentaT[0]['num_comprobante'];
+                        me.impuesto = arrayVentaT[0]['impuesto'];
+                        me.total = arrayVentaT[0]['total'];
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                // Obtener los datos del detalles
+                var urld = '/venta/obtenerDetalles?id=' + id;
+                axios.get(urld)
+                    .then(function (response) {
+                        var respuesta = response.data;
+                        me.arrayDetalle = respuesta.detalles;
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
             },
             abrirModal() {
                 this.arrayArticulo = [];
