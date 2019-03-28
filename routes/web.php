@@ -58,6 +58,12 @@ Route::group(['middleware' => ['auth']], function (){
         Route::post("cliente/registrar", "ClienteController@store");
         Route::put("cliente/actualizar", "ClienteController@update");
 
+        Route::get('venta', 'VentaController@index');
+        Route::post('ingreso/registrar', 'IngresoController@store');
+        Route::put('ingreso/desactivar', 'IngresoController@desactivar');
+        Route::get('ingreso/obtenerCabecera', 'IngresoController@obtenerCabecera');
+        Route::get('ingreso/obtenerDetalles', 'IngresoController@obtenerDetalles');
+
     });
 
     Route::group(['middleware' => ['Administrador']], function () {
@@ -76,6 +82,7 @@ Route::group(['middleware' => ['auth']], function (){
         Route::put("articulo/activar", "ArticuloController@activar");
         Route::get("articulo/buscarArticulo", "ArticuloController@buscarArticulo");
         Route::get("articulo/listarArticulo", "ArticuloController@listarArticulo");
+
         Route::get("proveedor", "ProveedorController@index");
         Route::post("proveedor/registrar", "ProveedorController@store");
         Route::put("proveedor/actualizar", "ProveedorController@update");
@@ -84,6 +91,12 @@ Route::group(['middleware' => ['auth']], function (){
         Route::get('ingreso', 'IngresoController@index');
         Route::post('ingreso/registrar', 'IngresoController@store');
         Route::put('ingreso/desactivar', 'IngresoController@desactivar');
+
+        Route::get('venta', 'VentaController@index');
+        Route::post('venta/registrar', 'VentaController@store');
+        Route::put('venta/desactivar', 'VentaController@desactivar');
+        Route::get('venta/obtenerCabecera', 'VentaController@obtenerCabecera');
+        Route::get('venta/obtenerDetalles', 'VentaController@obtenerDetalles');
 
         Route::get("cliente", "ClienteController@index");
         Route::post("cliente/registrar", "ClienteController@store");
