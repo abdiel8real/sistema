@@ -200,6 +200,7 @@
                                         <th>Subtotal</th>
                                     </tr>
                                 </thead>
+<<<<<<< HEAD
                                 <tbody v-if="arrayDetalle.length">
                                     <tr v-for="(detalle, index) in arrayDetalle" :key="detalle.id">
                                         <td>
@@ -476,7 +477,6 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayArticulo = respuesta.articulos;
-                    
                     if (me.arrayArticulo.length > 0)
                     {
                         me.articulo = me.arrayArticulo[0]['nombre'];
@@ -529,7 +529,6 @@
                     me.cantidad = 0;
                     me.precio = 0;
                     me.arrayDetalle = [];
-
                 }).catch(function (error) {
                     console.log(error);
                 });
@@ -695,7 +694,6 @@
                 this.arrayArticulo = [];
                 this.modal = 1;
                 this.tituloModal = "Seleccione 1 o más articulos";
-
             },
             desactivarUsuario(id) {
                 const swalWithBootstrapButtons = Swal.mixin({
