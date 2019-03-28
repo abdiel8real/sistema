@@ -5494,25 +5494,25 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error);
       });
     },
-    selectProveedor: function selectProveedor(search, loading) {
+    selectCliente: function selectCliente(search, loading) {
       var me = this;
       loading(true);
-      var url = '/proveedor/selectProveedor?filtro=' + search;
+      var url = '/cliente/selectCliente?filtro=' + search;
       axios.get(url).then(function (response) {
         var respuesta = response.data;
 
         q: search;
 
-        me.arrayProveedor = respuesta.proveedores;
+        me.arrayCliente = respuesta.clientes;
         loading(false);
       }).catch(function (error) {
         console.log(error);
       });
     },
-    getDatosProveedor: function getDatosProveedor(val1) {
+    getDatosCliente: function getDatosCliente(val1) {
       var me = this;
       me.loading = true;
-      me.idproveedor = val1.id;
+      me.idcliente = val1.id;
     },
     buscarArticulo: function buscarArticulo() {
       var me = this;
@@ -36596,7 +36596,7 @@ var render = function() {
                               label: "nombre",
                               options: _vm.arrayCliente,
                               placeholder: "Buscar Clientes",
-                              onChange: _vm.getDatosClientes
+                              onChange: _vm.getDatosCliente
                             }
                           })
                         ],
