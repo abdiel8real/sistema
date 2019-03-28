@@ -9,7 +9,7 @@ class Ingreso extends Model
     protected $fillable = [
         'idproveedor',
         'idusuario',
-        'tipo_comprobate',
+        'tipo_comprobante',
         'serie_comprobante',
         'num_comprobante',
         'fecha_hora',
