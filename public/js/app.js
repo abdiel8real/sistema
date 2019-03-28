@@ -5783,7 +5783,7 @@ __webpack_require__.r(__webpack_exports__);
       this.modal = 1;
       this.tituloModal = "Seleccione 1 o más articulos";
     },
-    desactivarUsuario: function desactivarUsuario(id) {
+    desactivarVenta: function desactivarVenta(id) {
       var _this = this;
 
       var swalWithBootstrapButtons = Swal.mixin({
@@ -5794,7 +5794,7 @@ __webpack_require__.r(__webpack_exports__);
         buttonsStyling: false
       });
       swalWithBootstrapButtons.fire({
-        title: '¿Estás seguro de desactivar este usuario?',
+        title: '¿Estás seguro de anular esta venta?',
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Aceptar',
@@ -5803,11 +5803,11 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (result) {
         if (result.value) {
           var me = _this;
-          axios.put("/user/desactivar", {
+          axios.put("/venta/desactivar", {
             'id': id
           }).then(function (response) {
-            me.listarPersona(1, '', 'nombre');
-            swalWithBootstrapButtons.fire('¡Desactivado!', 'El registro ha sido desactivado con éxito', 'success');
+            me.listarVenta(1, '', 'num_comprobante');
+            swalWithBootstrapButtons.fire('¡Anulado!', 'La venta ha sido anulada con éxito', 'success');
           }).catch(function (error) {
             console.log(error);
           });

@@ -870,7 +870,7 @@
                 this.modal = 1;
                 this.tituloModal = "Seleccione 1 o más articulos";
             },
-            desactivarUsuario(id) {
+            desactivarVenta(id) {
                 const swalWithBootstrapButtons = Swal.mixin({
                     customClass: {
                         confirmButton: 'btn btn-success',
@@ -880,7 +880,7 @@
                 })
 
                 swalWithBootstrapButtons.fire({
-                    title: '¿Estás seguro de desactivar este usuario?',
+                    title: '¿Estás seguro de anular esta venta?',
                     type: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'Aceptar',
@@ -891,13 +891,13 @@
 
                         let me = this;
 
-                        axios.put("/user/desactivar", {
+                        axios.put("/venta/desactivar", {
                             'id': id
                         }).then(function (response) {
-                            me.listarPersona(1, '', 'nombre');
+                            me.listarVenta(1, '', 'num_comprobante');
                             swalWithBootstrapButtons.fire(
-                                '¡Desactivado!',
-                                'El registro ha sido desactivado con éxito',
+                                '¡Anulado!',
+                                'La venta ha sido anulada con éxito',
                                 'success'
                             )
                         }).catch(function (error) {
