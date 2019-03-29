@@ -18,6 +18,13 @@
                     >
                         <i class="icon-plus"></i>&nbsp;Nuevo
                     </button>
+                    <button
+                            type="button"
+                            @click="cargarPdf()"
+                            class="btn btn-info"
+                    >
+                        <i class="icon-doc"></i>&nbsp;Reporte
+                    </button>
                 </div>
                 <div class="card-body">
                     <div class="form-group row">
@@ -158,7 +165,29 @@
                                             type="text"
                                             v-model="nombre"
                                             class="form-control"
-                                            placeholder="Nombre de categoría"
+                                            placeholder="Nombre de artículo"
+                                    >
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label">Precio Venta</label>
+                                <div class="col-md-9">
+                                    <input
+                                            type="number"
+                                            v-model="precio_venta"
+                                            class="form-control"
+                                            placeholder=""
+                                    >
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label">Stock</label>
+                                <div class="col-md-9">
+                                    <input
+                                            type="number"
+                                            v-model="stock"
+                                            class="form-control"
+                                            placeholder=""
                                     >
                                 </div>
                             </div>
@@ -291,6 +320,9 @@
                     .catch(function (error) {
                         console.log(error);
                     });
+            },
+            cargarPdf(){
+              window.open('http://127.0.0.1:8000/articulo/listarPdf', '_blank');
             },
             cambiarPagina(page, buscar, criterio){
                 let me = this;

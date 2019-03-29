@@ -1967,6 +1967,35 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -1984,7 +2013,7 @@ __webpack_require__.r(__webpack_exports__);
       tituloModal: "",
       tipoAccion: 0,
       errorArticulo: 0,
-      errorMostrarMsArticulo: [],
+      errorMostrarMsjArticulo: [],
       pagination: {
         'total': 0,
         'current_page': 0,
@@ -1995,7 +2024,8 @@ __webpack_require__.r(__webpack_exports__);
       },
       offset: 3,
       criterio: 'nombre',
-      buscar: ''
+      buscar: '',
+      arrayCategoria: []
     };
   },
   components: {
@@ -2044,6 +2074,20 @@ __webpack_require__.r(__webpack_exports__);
       }).catch(function (error) {
         console.log(error);
       });
+    },
+    selectCategoria: function selectCategoria() {
+      var me = this;
+      var url = '/categoria/selectCategoria';
+      axios.get(url).then(function (response) {
+        //console.log(response);
+        var respuesta = response.data;
+        me.arrayCategoria = respuesta.categorias;
+      }).catch(function (error) {
+        console.log(error);
+      });
+    },
+    cargarPdf: function cargarPdf() {
+      window.open('http://127.0.0.1:8000/articulo/listarPdf', '_blank');
     },
     cambiarPagina: function cambiarPagina(page, buscar, criterio) {
       var me = this; //Actualiza la página actual
@@ -2159,17 +2203,21 @@ __webpack_require__.r(__webpack_exports__);
     },
     validarArticulo: function validarArticulo() {
       this.errorArticulo = 0;
-      this.errorMostrarMsArticulo = [];
-      if (this.idcategoria == 0) this.errorMostrarMsArticulo.push("Seleccione una categoría.");
-      if (!this.nombre) this.errorMostrarMsArticulo.push("El nombre del artículo no puede estar vacío.");
-      if (!this.stock) this.errorMostrarMsArticulo.push("El stock del artículo debe ser un número y no puede estar vacío.");
-      if (!this.precio_venta) this.errorMostrarMsArticulo.push("El precio venta del artículo debe ser un número y no puede estar vacío.");
-      if (this.errorMostrarMsArticulo.length) this.errorArticulo = 1;
+      this.errorMostrarMsjArticulo = [];
+      if (this.idcategoria == 0) this.errorMostrarMsjArticulo.push("Seleccione una categoría.");
+      if (!this.nombre) this.errorMostrarMsjArticulo.push("El nombre del artículo no puede estar vacío.");
+      if (!this.stock) this.errorMostrarMsjArticulo.push("El stock del artículo debe ser un número y no puede estar vacío.");
+      if (!this.precio_venta) this.errorMostrarMsjArticulo.push("El precio venta del artículo debe ser un número y no puede estar vacío.");
+      if (this.errorMostrarMsjArticulo.length) this.errorArticulo = 1;
       return this.errorArticulo;
     },
     cerrarModal: function cerrarModal() {
       this.modal = 0;
-      this.tituloModal = "", this.idcategoria = 0, this.nombre_categoria = '', this.codigo = '', this.nombre = "";
+      this.tituloModal = "";
+      this.idcategoria = 0;
+      this.nombre_categoria = '';
+      this.codigo = '';
+      this.nombre = "";
       this.precio_venta = 0;
       this.stock = 0;
       this.descripcion = "";
@@ -2179,7 +2227,7 @@ __webpack_require__.r(__webpack_exports__);
       var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
 
       switch (modelo) {
-        case "categoria":
+        case "articulo":
           {
             switch (accion) {
               case "registrar":
@@ -2187,6 +2235,7 @@ __webpack_require__.r(__webpack_exports__);
                   this.modal = 1;
                   this.tituloModal = "Registrar Artículo";
                   this.idcategoria = 0;
+                  this.nombre_categoria = '';
                   this.codigo = '';
                   this.nombre = "";
                   this.precio_venta = 0;
@@ -2198,7 +2247,7 @@ __webpack_require__.r(__webpack_exports__);
               case "actualizar":
                 {
                   this.modal = 1;
-                  this.tituloModal = "Actualizar categoría";
+                  this.tituloModal = "Actualizar Artículo";
                   this.tipoAccion = 2;
                   this.articulo_id = data['id'];
                   this.idcategoria = data['idcategoria'];
@@ -2212,6 +2261,8 @@ __webpack_require__.r(__webpack_exports__);
             }
           }
       }
+
+      this.selectCategoria();
     }
   },
   mounted: function mounted() {
@@ -31099,6 +31150,23 @@ var render = function() {
               _c("i", { staticClass: "icon-plus" }),
               _vm._v(" Nuevo\n                ")
             ]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-info",
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  return _vm.cargarPdf()
+                }
+              }
+            },
+            [
+              _c("i", { staticClass: "icon-doc" }),
+              _vm._v(" Reporte\n                ")
+            ]
           )
         ]),
         _vm._v(" "),
@@ -31588,7 +31656,7 @@ var render = function() {
                           staticClass: "form-control",
                           attrs: {
                             type: "text",
-                            placeholder: "Nombre de categoría"
+                            placeholder: "Nombre de artículo"
                           },
                           domProps: { value: _vm.nombre },
                           on: {
@@ -31597,6 +31665,70 @@ var render = function() {
                                 return
                               }
                               _vm.nombre = $event.target.value
+                            }
+                          }
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        { staticClass: "col-md-3 form-control-label" },
+                        [_vm._v("Precio Venta")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-9" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.precio_venta,
+                              expression: "precio_venta"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "number", placeholder: "" },
+                          domProps: { value: _vm.precio_venta },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.precio_venta = $event.target.value
+                            }
+                          }
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        { staticClass: "col-md-3 form-control-label" },
+                        [_vm._v("Stock")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-9" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.stock,
+                              expression: "stock"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "number", placeholder: "" },
+                          domProps: { value: _vm.stock },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.stock = $event.target.value
                             }
                           }
                         })
@@ -31648,8 +31780,8 @@ var render = function() {
                           {
                             name: "show",
                             rawName: "v-show",
-                            value: _vm.errorCategoria,
-                            expression: "errorCategoria"
+                            value: _vm.errorArticulo,
+                            expression: "errorArticulo"
                           }
                         ],
                         staticClass: "form-group row div-error"
@@ -31658,7 +31790,7 @@ var render = function() {
                         _c(
                           "div",
                           { staticClass: "text-center text-error" },
-                          _vm._l(_vm.errorMostrarMsCategoria, function(error) {
+                          _vm._l(_vm.errorMostrarMsjArticulo, function(error) {
                             return _c("div", {
                               key: error,
                               domProps: { textContent: _vm._s(error) }
