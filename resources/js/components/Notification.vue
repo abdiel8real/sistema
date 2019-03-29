@@ -9,14 +9,14 @@
                 <strong>Notificaciones</strong>
             </div>
             <div v-if="notifications.length">
-                <li v-for="item in notifications" :key="item.id">
+                <li v-for="item in listar" :key="item.id">
                     <a class="dropdown-item" href="#">
-                        <i class="fa fa-envelope-o"></i> {{item.data.datos.ingresos.msj}}
-                        <span class="badge badge-success">{{item.data.datos.ingresos.numero}}</span>
+                        <i class="fa fa-envelope-o"></i> {{item.ingresos.msj}}
+                        <span class="badge badge-success">{{item.ingresos.numero}}</span>
                     </a>
                     <a class="dropdown-item" href="#">
-                        <i class="fa fa-tasks"></i> {{item.data.datos.ventas.msj}}
-                        <span class="badge badge-danger">{{item.data.datos.ventas.numero}}</span>
+                        <i class="fa fa-tasks"></i> {{item.ventas.msj}}
+                        <span class="badge badge-danger">{{item.ventas.numero}}</span>
                     </a>
                 </li>
             </div>
@@ -32,7 +32,26 @@
         props: ['notifications'],
         data(){
             return{
-
+                arrayNotifications: []
+            }
+        },
+        computed: {
+            listar: function () {
+                // return this.notifications[0];
+                this.arrayNotifications = Object.values(this.notifications[0]);
+                if (this.notifications == '') {
+                    return this.arrayNotifications = [];
+                }
+                else {
+                    this.arrayNotifications = Object.values(this.notifications[0]);
+                    if (this.arrayNotifications.length > 3)
+                    {
+                        return Object.values(this.arrayNotifications[4]);
+                    }
+                    else {
+                        return Object.values(this.arrayNotifications[0]);
+                    }
+                }
             }
         }
     }

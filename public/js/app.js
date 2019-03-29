@@ -3960,7 +3960,27 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['notifications'],
   data: function data() {
-    return {};
+    return {
+      arrayNotifications: []
+    };
+  },
+  computed: {
+    listar: function listar() {
+      // return this.notifications[0];
+      this.arrayNotifications = Object.values(this.notifications[0]);
+
+      if (this.notifications == '') {
+        return this.arrayNotifications = [];
+      } else {
+        this.arrayNotifications = Object.values(this.notifications[0]);
+
+        if (this.arrayNotifications.length > 3) {
+          return Object.values(this.arrayNotifications[4]);
+        } else {
+          return Object.values(this.arrayNotifications[0]);
+        }
+      }
+    }
   }
 });
 
@@ -55452,7 +55472,7 @@ var render = function() {
       _vm.notifications.length
         ? _c(
             "div",
-            _vm._l(_vm.notifications, function(item) {
+            _vm._l(_vm.listar, function(item) {
               return _c("li", { key: item.id }, [
                 _c(
                   "a",
@@ -55460,12 +55480,10 @@ var render = function() {
                   [
                     _c("i", { staticClass: "fa fa-envelope-o" }),
                     _vm._v(
-                      " " +
-                        _vm._s(item.data.datos.ingresos.msj) +
-                        "\n                    "
+                      " " + _vm._s(item.ingresos.msj) + "\n                    "
                     ),
                     _c("span", { staticClass: "badge badge-success" }, [
-                      _vm._v(_vm._s(item.data.datos.ingresos.numero))
+                      _vm._v(_vm._s(item.ingresos.numero))
                     ])
                   ]
                 ),
@@ -55476,12 +55494,10 @@ var render = function() {
                   [
                     _c("i", { staticClass: "fa fa-tasks" }),
                     _vm._v(
-                      " " +
-                        _vm._s(item.data.datos.ventas.msj) +
-                        "\n                    "
+                      " " + _vm._s(item.ventas.msj) + "\n                    "
                     ),
                     _c("span", { staticClass: "badge badge-danger" }, [
-                      _vm._v(_vm._s(item.data.datos.ventas.numero))
+                      _vm._v(_vm._s(item.ventas.numero))
                     ])
                   ]
                 )
