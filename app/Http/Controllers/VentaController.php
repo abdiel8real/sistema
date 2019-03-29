@@ -117,6 +117,9 @@ class VentaController extends Controller
                 $detalle->save();
             }
             DB::commit();
+            return [
+                'id' => $venta->id
+            ];
         } catch (Exception $e){
             DB::rollBack();
         }
