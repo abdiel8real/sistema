@@ -2,7 +2,7 @@
     <main class="main">
         <!-- Breadcrumb -->
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Escrituorio</a></li>
+            <li class="breadcrumb-item"><a href="/">Escritorio</a></li>
         </ol>
         <div class="container-fluid">
             <div class="card">
@@ -60,7 +60,12 @@
                 charIngreso: null,
                 ingresos: [],
                 varTotalIngreso: [],
-                varMesIngreso: []
+                varMesIngreso: [],
+                varVenta: null,
+                charVenta: null,
+                ventas: [],
+                varTotalVenta: [],
+                varMesVenta: []
             }
         },
         methods: {
@@ -72,6 +77,19 @@
                     me.ingresos = respuesta.ingresos;
 
                     me.loadIngresos();
+                })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            getVentas(){
+                let me = this;
+                const url = '/dashboard';
+                axios.get(url).then(function (response) {
+                    const respuesta = response.data;
+                    me.ventas = respuesta.ventas;
+
+                    me.loadVentas();
                 })
                     .catch(function (error) {
                         console.log(error);
@@ -106,10 +124,41 @@
                         }
                     }
                 });
+            },
+            loadVentas(){
+                let me = this;
+                me.ventas.map(function (venta) {
+                    me.varMesVenta.push(venta.mes);
+                    me.varTotalVenta.push(venta.total);
+                });
+                me.varVenta = document.getElementById('ventas').getContext('2d');
+                me.charVenta = new Chart(me.varVenta, {
+                    type: 'bar',
+                    data: {
+                        labels: me.varMesVenta,
+                        datasets: [{
+                            label: 'Ventas',
+                            data: me.varTotalVenta,
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgba(54, 162, 235, 0.2)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                        }
+                    }
+                });
             }
         },
         mounted() {
             this.getIngresos();
+            this.getVentas();
         }
     }
 </script>
